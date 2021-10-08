@@ -19,5 +19,17 @@ This mod aims to bring about various Automation improvements to Oxygen not Inclu
 
 ### Contributors
 
+<table>
+<tr>
+    <td align="center" style="word-wrap: break-word; width: 150.0; height: 150.0">
+        <a href=https://github.com/richardspence>
+            <img src=https://avatars.githubusercontent.com/u/9914123?v=4 width="100;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=richardspence/>
+            <br />
+            <sub style="font-size:14px"><b>richardspence</b></sub>
+        </a>
+    </td>
+</tr>
+</table>
+
 <!-- readme: contributors -start -->
 <!-- readme: contributors -end -->
