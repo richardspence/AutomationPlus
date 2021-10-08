@@ -9,9 +9,18 @@ namespace AutomationPlus
 {
     class AluGateStrings
     {
-        public static LocString NAME = (LocString)STRINGS.UI.FormatAsLink("Arithmetic Logical Unit", nameof(AluGate));
-        public static LocString DESC = (LocString)"Performs 4-bit arithmetic operations on the input parameters";
-        public static LocString EFFECT = (LocString)("Outputs a " + STRINGS.UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " on random bits ");
+        public static LocString NAME = (LocString)STRINGS.UI.FormatAsLink("4-Bit Arithmetic Logical Unit", nameof(AluGate));
+        public static LocString DESC = (LocString)@"
+Operator Codes:   
+add = 0x1 (0001)
+subtract = 0x2 (0010),
+multiply = 0x4 (0100),
+modulus = 0x5 (0101),
+exp = 0x6 (0110),
+divide = 0x8 (1000),
+logicalBitRight = 0xD (1101),
+logicalBitLeft = 0xE, (1110)";
+        public static LocString EFFECT = (LocString)("Performs 4-bit arithmetic operations on the input parameters");
         public static LocString OUTPUT_NAME = (LocString)"XXXOUTPUT";
         public static LocString OUTPUT_ACTIVE = (LocString)("XXXSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". After receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ", will continue sending " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " until the timer has expired");
         public static LocString OUTPUT_INACTIVE = (LocString)("XXXOtherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".");

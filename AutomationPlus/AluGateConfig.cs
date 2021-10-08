@@ -46,7 +46,7 @@ namespace AutomationPlus
 
         public override void DoPostConfigureComplete(GameObject go)
         {
-            go.AddOrGet<DisplayAdaptor>();
+            go.AddOrGet<AluGate>();
             go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits);
         }
     }

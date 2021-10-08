@@ -1,4 +1,5 @@
 using HarmonyLib;
+using PeterHan.PLib.UI;
 using static STRINGS.UI.BUILDCATEGORIES;
 
 namespace AutomationPlus
@@ -44,6 +45,15 @@ namespace AutomationPlus
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, PnrgGateConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, DisplayAdaptorConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, AluGateConfig.ID);
+            }
+
+            [HarmonyPatch(typeof(DetailsScreen), "OnPrefabInit")]
+            public static class SideScreenCreator
+            {
+                internal static void Postfix()
+                {
+                    PUIUtils.AddSideScreenContent<AluGateSideScreen>();
+                }
             }
 
             [HarmonyPatch(typeof(Db))]
