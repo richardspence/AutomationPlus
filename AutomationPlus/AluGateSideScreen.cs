@@ -163,6 +163,7 @@ namespace AutomationPlus
                     break;
                 }
             }
+            
             this.UpdateVisuals();
         }
 

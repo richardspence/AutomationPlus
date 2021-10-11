@@ -149,7 +149,19 @@ namespace AutomationPlus
         [Serialize]
         protected int currentValue = 0;
         [Serialize]
-        public AluGateOperators opCode = AluGateOperators.none;
+        private AluGateOperators _opCode = AluGateOperators.none;
+        public AluGateOperators opCode
+        {
+            get
+            {
+                return _opCode;
+            }
+            set
+            {
+                _opCode = value;
+                this.RecalcValues();
+            }
+        }
         //private static readonly EventSystem.IntraObjectHandler<AluGate> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<AluGate>((component, data) => component.OnLogicValueChanged(data));
         protected LogicPorts ports;
 
@@ -252,6 +264,11 @@ namespace AutomationPlus
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
             if (logicValueChanged.portID == AluGate.OUTPUT_PORT_ID)
                 return;
+            RecalcValues();
+        }
+
+        private void RecalcValues()
+        {
             var lhs = this.GetInputValue1();
             var rhs = this.GetInputValue2();
             currentValue = 0;
@@ -312,7 +329,6 @@ namespace AutomationPlus
             this.UpdateValue();
         }
 
-      
     }
 
    
