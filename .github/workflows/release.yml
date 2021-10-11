@@ -32,14 +32,6 @@ jobs:
       run: dotnet restore
     - name: Restore Packages
       run: nuget restore
-    # - name: Install tools
-    #   run: dotnet tool install -g dotnet-version-cli
-    # - name: Bump versions
-    #   uses: remorses/bump-version@js
-    #   with:
-    #     version_file: ./VERSION.txt
-    #     github_token: ${{ secrets.GITHUB_TOKEN }}
-    #     ignore: bin, assets
     - name: Version  
       id: version  
       uses: juliansangillo/tag-version@v1  
@@ -47,8 +39,6 @@ jobs:
         production-branch: main  
         test-branch: test
         dev-branch: dev
-    # - name: Patch Build
-    #   run: dotnet version -f ./AutomationPlus/AutomationPlus.csproj patch
     - name: Build
       run: dotnet build -c Release --no-restore
     - name: Archive Release
