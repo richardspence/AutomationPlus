@@ -117,10 +117,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST %25USERPROFILE%25\OneDrive\Documents\ (
+    <PostBuildEvent>IF EXIST %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\ (
     xcopy /Y /s $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
 ) else (
-    IF EXIST %25USERPROFILE%25\Documents\  xcopy /Y /s $(TargetDir) %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
+    IF EXIST %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\  xcopy /Y /s $(TargetDir) %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
 )</PostBuildEvent>
   </PropertyGroup>
 </Project>

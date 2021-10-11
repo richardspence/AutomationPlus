@@ -2,14 +2,9 @@ name: build
 
 on:
   push:
-  pull_request:
-    branches: [ main ]
-    paths:
-    - '**.cs'
-    - '**.csproj'
-
+  
 env:
-  DOTNET_VERSION: '4.7.1' # The .NET SDK version to use
+  DOTNET_VERSION: '5.0.301' # The .NET SDK version to use
 
 jobs:
   build:
@@ -18,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [windows-latest]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +24,8 @@ jobs:
 
     - name: Install dependencies
       run: dotnet restore
-      
+    - name: Restore Packages
+      run: nuget restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Archive Release
@@ -37,6 +33,7 @@ jobs:
       with:
         type: 'zip'
         filename: 'AutomationPlus.zip'
-        directory: AutomationPlus/bin/Release
+        path: AutomationPlus/bin/Release
         exclusions: '*.git* /*node_modules/* .editorconfig'
+
       

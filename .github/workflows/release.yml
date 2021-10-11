@@ -1,0 +1,73 @@
+name: build
+
+on:
+  push:
+  pull_request:
+    branches: [ main ]
+    tags-ginore:
+      - '*'
+    paths:
+    - '**.cs'
+    - '**.csproj'
+
+env:
+  DOTNET_VERSION: '5.0.301' # The .NET SDK version to use
+
+jobs:
+  build:
+
+    name: build-${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    - name: Install dependencies
+      run: dotnet restore
+    - name: Restore Packages
+      run: nuget restore
+    # - name: Install tools
+    #   run: dotnet tool install -g dotnet-version-cli
+    # - name: Bump versions
+    #   uses: remorses/bump-version@js
+    #   with:
+    #     version_file: ./VERSION.txt
+    #     github_token: ${{ secrets.GITHUB_TOKEN }}
+    #     ignore: bin, assets
+    - name: Version  
+      id: version  
+      uses: juliansangillo/tag-version@v1  
+      with:  
+        production-branch: master  
+        test-branch: test  
+        dev-branch: develop
+    # - name: Patch Build
+    #   run: dotnet version -f ./AutomationPlus/AutomationPlus.csproj patch
+    - name: Build
+      run: dotnet build -c Release --no-restore
+    - name: Archive Release
+      uses: thedoctor0/zip-release@master
+      with:
+        type: 'zip'
+        filename: 'AutomationPlus.zip'
+        path: AutomationPlus/bin/Release
+        exclusions: '*.git* /*node_modules/* .editorconfig'
+    - name: Push tags
+      run: |
+        git config --local user.email "<>"
+        git config --local user.name "github-actions[bot]"
+        git add .
+        git commit -m 'Release Build'
+        git push origin ${{ github.ref }} 
+        git push --tags
+    - name: Upload Release
+      uses: ncipollo/release-action@v1
+      with:
+        artifacts: "AutomationPlus.zip"
+        token: ${{ secrets.GITHUB_TOKEN }}
