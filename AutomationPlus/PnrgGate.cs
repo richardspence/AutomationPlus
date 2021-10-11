@@ -9,7 +9,7 @@ using UnityEngine;
 namespace AutomationPlus
 {
     [SerializationConfig(MemberSerialization.OptIn)]
-    class PnrgGate : KMonoBehaviour, IRender200ms
+    class PnrgGate : KMonoBehaviour
     {
         [MyCmpAdd]
         private CopyBuildingSettings copyBuildingSettings;
@@ -29,7 +29,7 @@ namespace AutomationPlus
         private static KAnimHashedString INPUT_SYMBOL = (KAnimHashedString)"input_light_bloom";
         private Color colorOn = new Color(0.3411765f, 0.7254902f, 0.3686275f);
         private Color colorOff = new Color(0.9529412f, 0.2901961f, 0.2784314f);
-
+        Dictionary<int, HashedString> _animations = new Dictionary<int, HashedString>();
         [Serialize]
         private int currentValue;
 
@@ -45,12 +45,7 @@ namespace AutomationPlus
             this.Subscribe<PnrgGate>(-801688580, PnrgGate.OnLogicValueChangedDelegate);
             this.ports = this.GetComponent<LogicPorts>();
             this.kbac = this.GetComponent<KBatchedAnimController>();
-            this.kbac.Play((HashedString)"idle");
-        }
-
-        public void Render200ms(float dt)
-        {
-
+            this.kbac.Play((HashedString)"off");
         }
 
         public int GetInputValue()
@@ -84,33 +79,39 @@ namespace AutomationPlus
         public void OnLogicValueChanged(object data)
         {
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
-            if (logicValueChanged.portID != PnrgGate.INPUT_PORT_ID)
-                return;
-            if (logicValueChanged.newValue != 0)
+            if (logicValueChanged.portID == PnrgGate.INPUT_PORT_ID)
             {
-                this.currentValue = _random.Next() % 15;
+                if (logicValueChanged.newValue != 0)
+                {
+                    this.currentValue = _random.Next() % 15;
+                }
+                this.GetComponent<LogicPorts>().SendSignal(PnrgGate.OUTPUT_PORT_ID, currentValue);
             }
-            this.GetComponent<LogicPorts>().SendSignal(PnrgGate.OUTPUT_PORT_ID, currentValue);
+            UpdateVisuals();
         }
 
         public void UpdateVisuals()
         {
             LogicCircuitNetwork inputNetwork = this.GetInputNetwork();
             LogicCircuitNetwork outputNetwork = this.GetOutputNetwork();
-            int num = 0;
-            if (inputNetwork != null)
+            if(inputNetwork != null || outputNetwork != null)
             {
-                ++num;
-                this.kbac.SetSymbolTint(PnrgGate.INPUT_SYMBOL, LogicCircuitNetwork.IsBitActive(0, this.GetInputValue()) ? this.colorOn : this.colorOff);
+                var firstBit = GetInputValue() != 0 ? 1 : 0;
+                var key = firstBit << 4;
+                var value = GetOutputValue();
+                key &= value;
+                if (!_animations.ContainsKey(key))
+                {
+                    var valString = $"{value & 0x1}{value & 0x2}{value & 0x4}{value & 0x8}";
+                    _animations.Add(key, $"on_{firstBit}_{valString}");
+                }
+                this.kbac.Play((HashedString)_animations[key], KAnim.PlayMode.Paused);
             }
-            if (outputNetwork != null)
+            else
             {
-                num += 4;
-                this.kbac.SetSymbolTint(PnrgGate.BIT_ONE_SYMBOL, this.IsBitActive(0) ? this.colorOn : this.colorOff);
-                this.kbac.SetSymbolTint(PnrgGate.BIT_TWO_SYMBOL, this.IsBitActive(1) ? this.colorOn : this.colorOff);
-                this.kbac.SetSymbolTint(PnrgGate.BIT_THREE_SYMBOL, this.IsBitActive(2) ? this.colorOn : this.colorOff);
-                this.kbac.SetSymbolTint(PnrgGate.BIT_FOUR_SYMBOL, this.IsBitActive(3) ? this.colorOn : this.colorOff);
+                this.kbac.Play("off");
             }
+            
         }
 
         public bool IsBitActive(int bit)

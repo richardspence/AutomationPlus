@@ -20,6 +20,121 @@ namespace AutomationPlus
         logicalBitLeft = 0xE,
     }
 
+    class BinaryFormatter : IFormatProvider, ICustomFormatter
+    {
+        private bool isTwosComplement;
+        public BinaryFormatter(bool isTwosComplement)
+        {
+            this.isTwosComplement = isTwosComplement;
+        }
+        public object GetFormat(Type formatType)
+        {
+            if (formatType == typeof(ICustomFormatter))
+                return this;
+            else
+                return null;
+        }
+
+        public string Format(string format, object arg, IFormatProvider formatProvider)
+        {
+            // Check whether this is an appropriate callback
+            if (!this.Equals(formatProvider))
+                return null;
+            var components = (format ?? "D").Split(':');
+            var primary = components[0];
+            var bits = 4;
+            if (components.Length > 1)
+            {
+                bits = Convert.ToInt32(components[1]);
+            }
+
+            string numericString = arg.ToString();
+            int value = (int)arg;
+            var normalValue = value;
+            if (isTwosComplement)
+            {
+                normalValue = BinaryUtils.GetValue(value, bits);
+            }
+            if (primary == "D")
+            {
+                return normalValue.ToString();
+            }
+            else if (primary == "B")
+            {
+                var binaryValue = "";
+                for (int i = 1; i <= bits; i++)
+                {
+                    var bit = (1 << (bits - i));
+                    var hasBit = (value & bit) == bit;
+                    if (hasBit)
+                    {
+                        binaryValue += "1";
+                    }
+                    else
+                    {
+                        binaryValue += "0";
+                    }
+
+                }
+                return binaryValue;
+            }
+            else if (primary == "F")
+            {
+                return $"{this.Format("D", arg, formatProvider)} ({this.Format($"B:{bits}", arg, formatProvider)})";
+            }
+            return numericString;
+        }
+    }
+
+    class BinaryUtils
+    {
+        private static Dictionary<int, int> _minValues = new Dictionary<int, int>()
+        {
+            {4, 1 << 3 },
+            {8, 1 << 7 }
+        };
+
+        public static bool IsNegative(int value, int bits)
+        {
+            var minValue = _minValues[bits];
+            var isNegative = (value & minValue) == minValue;
+            return isNegative;
+        }
+
+        public static int GetTwosComplement(int value, int bits)
+        {
+            var minValue = _minValues[bits];
+            if (IsNegative(value, bits))
+            {
+                return (value ^ minValue) + 1;
+            }
+            else
+            {
+                return value;
+            }
+        }
+
+        public static int GetValue(int value, int bits)
+        {
+            var minValue = _minValues[bits];
+            if (IsNegative(value, bits))
+            {
+                return - ((value ^ minValue) + 1);
+            }
+            else
+            {
+                return value;
+            }
+        }
+    }
+
+    struct AluValues
+    {
+       public string inputValue1;
+       public string inputValue2;
+       public string outputValue;
+    }
+
     class AluGate : KMonoBehaviour
     {
         [MyCmpAdd]
@@ -28,26 +143,29 @@ namespace AutomationPlus
         public static readonly HashedString INPUT_PORT_ID2 = new HashedString("AluGateInput2");
         public static readonly HashedString OUTPUT_PORT_ID = new HashedString("AluGateOutput");
         public static readonly HashedString OP_PORT_ID = new HashedString("AluGateOpCode");
+
+        public event EventHandler ValueChanged;
+
         [Serialize]
-        private int currentValue = 0;
+        protected int currentValue = 0;
         [Serialize]
         public AluGateOperators opCode = AluGateOperators.none;
         //private static readonly EventSystem.IntraObjectHandler<AluGate> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<AluGate>((component, data) => component.OnLogicValueChanged(data));
-        private LogicPorts ports;
+        protected LogicPorts ports;
 
         public AluGate() : base()
         {
-            if (isTwosComplement)
-            {
-                minValue = 1 << (signBit - 1);
-            }
+          
         }
 
-        private int maxValue = 0xf;
-        private int signBit = 4;
-        private int minValue =0;
+        protected int maxValue = 0xf;
+        protected int bits = 4;
 
         public bool isTwosComplement = true;
+
+        public string SideScreenTitleKey => "Foo";
+
+
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
@@ -67,43 +185,39 @@ namespace AutomationPlus
             this.ports = this.GetComponent<LogicPorts>();
         }
 
-        public int GetInputValue1()
+        public virtual int GetInputValue1()
         {
             return this.ports?.GetInputValue(AluGate.INPUT_PORT_ID1) ?? 0;
         }
 
-        public int GetInputValue2()
+        public virtual int GetInputValue2()
         {
             return this.ports?.GetInputValue(AluGate.INPUT_PORT_ID2) ?? 0;
         }
 
-        private bool isNegativeValue(int value)
+        public AluValues getValues()
         {
-            if (isTwosComplement)
+            var formatString = $"{{0:F:{this.bits}}}";
+            var formatter = new BinaryFormatter(isTwosComplement);
+            return new AluValues
             {
-                var isNegative = (value & minValue) == minValue;
-                return isNegative;
-            }
-            return false;
+                inputValue1 = String.Format(formatter, formatString, GetInputValue1()),
+                inputValue2 = String.Format(formatter, formatString, GetInputValue2()),
+                outputValue = String.Format(formatter, formatString, currentValue),
+            };
         }
+
 
         private int getTwosComplement(int value)
         {
-            if (isNegativeValue(value))
-            {
-                return (value ^ minValue) + 1;
-            }
-            else
-            {
-                return value;
-            }
+            return BinaryUtils.GetTwosComplement(value, bits);
         }
 
         public AluGateOperators GetOpCode()
         {
 
             var input = this.ports?.GetInputValue(AluGate.OP_PORT_ID);
-            if(input == null || !this.isOpCodeConnected())
+            if (input == null || !this.isOpCodeConnected())
             {
                 return this.opCode;
             }
@@ -123,15 +237,24 @@ namespace AutomationPlus
             return value;
         }
 
+        protected virtual void UpdateValue()
+        {
+            this.GetComponent<LogicPorts>().SendSignal(AluGate.OUTPUT_PORT_ID, currentValue);
+        }
+
         public void OnLogicValueChanged(object data)
         {
+            if (this.ValueChanged != null)
+            {
+                this.ValueChanged(this, EventArgs.Empty);
+            }
+
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
-            Debug.Log($"AluOLV: {logicValueChanged.portID} {logicValueChanged.newValue} {this.GetOpCode()}, {this.GetInputValue1()}, {this.GetInputValue2()}");
             if (logicValueChanged.portID == AluGate.OUTPUT_PORT_ID)
                 return;
             var lhs = this.GetInputValue1();
             var rhs = this.GetInputValue2();
-            var currentValue = 0;
+            currentValue = 0;
             switch (this.GetOpCode())
             {
                 case AluGateOperators.add:
@@ -162,10 +285,11 @@ namespace AutomationPlus
                     }
                     break;
                 case AluGateOperators.exp:
-                    currentValue = (int)Math.Pow(lhs,  rhs);
+                    currentValue = (int)Math.Pow(lhs, rhs);
                     break;
                 case AluGateOperators.divide:
-                    if(rhs != 0) {
+                    if (rhs != 0)
+                    {
                         currentValue = lhs / rhs;
                     }
                     else
@@ -185,7 +309,11 @@ namespace AutomationPlus
             }
             // reduce the values
             currentValue = checkOverflow(currentValue);
-            this.GetComponent<LogicPorts>().SendSignal(AluGate.OUTPUT_PORT_ID, currentValue);
+            this.UpdateValue();
         }
+
+      
     }
+
+   
 }

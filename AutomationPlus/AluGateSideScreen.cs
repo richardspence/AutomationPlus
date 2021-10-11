@@ -29,6 +29,10 @@ namespace AutomationPlus
         private GameObject toggle;
         private GameObject combo;
         private GameObject invalidWarning;
+        private GameObject lblInput1;
+        private GameObject lblInput2;
+        private GameObject lblOutput1;
+        private GameObject lblOutput2;
 
         public override bool IsValidForTarget(GameObject target)
         {
@@ -99,6 +103,40 @@ namespace AutomationPlus
                 this.UpdateVisuals();
             }; ;
             row2.AddChild(comboBox).AddTo(gameObject);
+            var row3 = new PPanel("StatusRow").AddTo(gameObject);
+
+
+             lblInput1 = new PLabel("lblInput1")
+            {
+                TextAlignment = TextAnchor.MiddleRight,
+                ToolTip = tooltip,
+                Text = " ",
+                TextStyle = PUITuning.Fonts.TextDarkStyle
+            }.AddTo(row3); 
+
+             lblInput2 = new PLabel("lblInput1")
+            {
+                TextAlignment = TextAnchor.MiddleRight,
+                ToolTip = tooltip,
+                Text = " ",
+                TextStyle = PUITuning.Fonts.TextDarkStyle
+            }.AddTo(row3);
+
+            lblOutput1 = new PLabel("lblInput1")
+            {
+                TextAlignment = TextAnchor.MiddleRight,
+                ToolTip = tooltip,
+                Text = " ",
+                TextStyle = PUITuning.Fonts.TextDarkStyle
+            }.AddTo(row3);
+
+            //var lblOutput2 = new PLabel("lblInput1")
+            //{
+            //    TextAlignment = TextAnchor.MiddleRight,
+            //    ToolTip = tooltip,
+            //    Text = " ",
+            //    TextStyle = PUITuning.Fonts.TextDarkStyle
+            //}.AddTo(row3); 
 
             var defaultStyle = PUITuning.Fonts.UIDarkStyle;
             var errorStyle = ScriptableObject.CreateInstance<TextStyleSetting>();
@@ -130,7 +168,6 @@ namespace AutomationPlus
 
         protected override void OnPrefabInit()
         {
-            Debug.Log($"SS:OnPrefab");
             var baseLayout = gameObject.GetComponent<BoxLayoutGroup>();
             var margin = new RectOffset(4, 4, 4, 4);
             if (baseLayout != null)
@@ -142,7 +179,7 @@ namespace AutomationPlus
                     TextAnchor.UpperCenter,
                     Spacing = 8
                 };
-            BuildRow("Is Twos Complement", "Determines if the number system includes a sign bit", (t) =>
+            BuildRow("Signed Ints?", "Determines if the number system includes a sign bit", (t) =>
             {
                 this.toggle = t;
                 this.UpdateVisuals();
@@ -173,6 +210,7 @@ namespace AutomationPlus
             if(invalidWarning != null && targetAluGate != null)
             {
                 var valid = !this.targetAluGate.isOpCodeConnected();
+                
                 PUIElements.SetText(invalidWarning, valid ? " " : "Operator Cable Connected \n setting will be ignored");
             }
 
@@ -180,6 +218,7 @@ namespace AutomationPlus
 
         private void UpdateVisuals()
         {
+            Debug.Break();
             Debug.Log($"SS:UpdateVisuals");
             if (this.toggle != null && this.targetAluGate != null)
             {
@@ -191,8 +230,14 @@ namespace AutomationPlus
                     opCode = AluGateOperators.none;
                 }
                 PComboBox<ListOption>.SetSelectedItem(this.combo, new ListOption(this._opCodeNames[opCode]));
+                var values = targetAluGate.getValues();
+                if(lblInput1)
+                    PUIElements.SetText(lblInput1, $"Input 1: {values.inputValue1}");
+                if (lblInput2)
+                    PUIElements.SetText(lblInput2, $"Input 2: {values.inputValue2}");
+                if (lblOutput1)
+                    PUIElements.SetText(lblOutput1, $"Output: {values.outputValue}");
             }
-           
         }
     }
 }

@@ -10,7 +10,7 @@ namespace AutomationPlus
     public class PnrgGateStrings
     {
         public static LocString NAME = (LocString)STRINGS.UI.FormatAsLink("Random Number Generator", nameof(PnrgGate));
-        public static LocString DESC = (LocString)"On reset, will generate a new random number to be emitted on the ribbon.";
+        public static LocString DESC = (LocString)$"On reset, will randomize the bits on the random that are set as {STRINGS.UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active)}.";
         public static LocString EFFECT = (LocString)("Outputs a " + STRINGS.UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " on random bits ");
         public static LocString OUTPUT_NAME = (LocString)"XXXOUTPUT";
         public static LocString OUTPUT_ACTIVE = (LocString)("XXXSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". After receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ", will continue sending " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " until the timer has expired");

@@ -16,7 +16,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -73,6 +73,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Alu8Gate.cs" />
     <Compile Include="AluGate.cs" />
     <Compile Include="AluGateConfig.cs" />
     <Compile Include="ListOption.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="DisplayAdaptor.cs" />
     <Compile Include="AluGateStrings.cs" />
     <Compile Include="DisplayAdaptorStrings.cs" />
+    <Compile Include="PnrgGateAnimations.cs" />
     <Compile Include="PnrgGateStrings.cs" />
     <Compile Include="DelayGateStrings.cs" />
     <Compile Include="GameStrings.cs" />
@@ -94,6 +96,12 @@
     <Compile Include="StringUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="anim\assets\logic_generator_random\logic_generator_random_anim.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="anim\assets\logic_generator_random\logic_generator_random_build.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="mod.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -102,8 +110,17 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="anim\assets\logic_generator_random\logic_generator_random.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)</PostBuildEvent>
+    <PostBuildEvent>IF EXIST %25USERPROFILE%25\OneDrive\Documents\ (
+    xcopy /Y /s $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
+) else (
+    IF EXIST %25USERPROFILE%25\Documents\  xcopy /Y /s $(TargetDir) %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
+)</PostBuildEvent>
   </PropertyGroup>
 </Project>
