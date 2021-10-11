@@ -1,4 +1,4 @@
-name: build
+name: Release Build
 
 on:
   push:
@@ -69,5 +69,6 @@ jobs:
     - name: Upload Release
       uses: ncipollo/release-action@v1
       with:
+        tag: ${steps.Version.revision}
         artifacts: "AutomationPlus.zip"
         token: ${{ secrets.GITHUB_TOKEN }}
