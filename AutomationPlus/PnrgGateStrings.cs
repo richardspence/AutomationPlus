@@ -16,11 +16,11 @@ namespace AutomationPlus
         public static LocString OUTPUT_ACTIVE = (LocString)("XXXSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". After receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ", will continue sending " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " until the timer has expired");
         public static LocString OUTPUT_INACTIVE = (LocString)("XXXOtherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".");
 
-        public static string LOGIC_PORT = "LOGIC_PORT";
-        public static string INPUT_PORT_ACTIVE = "INPUT_PORT_ACTIVE";
-        public static string INPUT_PORT_INACTIVE = "INPUT_PORT_INACTIVE";
-        public static string LOGIC_PORT_OUTPUT = "LOGIC_PORT_OUTPUT";
-        public static string OUTPUT_PORT_ACTIVE = "OUTPUT_PORT_ACTIVE";
+        public static string LOGIC_PORT = "The automation signal that should be repated";
+        public static string INPUT_PORT_ACTIVE = "Regnerate a random number";
+        public static string INPUT_PORT_INACTIVE = "";
+        public static string LOGIC_PORT_OUTPUT = "The repeated automation signal";
+        public static string OUTPUT_PORT_ACTIVE = "The delayed sginal";
         public static string OUTPUT_PORT_INACTIVE = "OUTPUT_PORT_INACTIVE";
     }
 }

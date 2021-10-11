@@ -69,6 +69,6 @@ jobs:
     - name: Upload Release
       uses: ncipollo/release-action@v1
       with:
-        tag: ${steps.Version.revision}
+        tag: ${{ steps.Version.outputs.revision }}
         artifacts: "AutomationPlus.zip"
         token: ${{ secrets.GITHUB_TOKEN }}

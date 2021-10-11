@@ -138,7 +138,7 @@ namespace AutomationPlus
 
         public string GetSliderTooltipKey(int index) => "STRINGS.UI.UISIDESCREENS.LOGIC_BUFFER_SIDE_SCREEN.TOOLTIP";
 
-        string ISliderControl.GetSliderTooltip() => string.Format((string)Strings.Get("STRINGS.UI.UISIDESCREENS.LOGIC_BUFFER_SIDE_SCREEN.TOOLTIP"), (object)this.DelayAmount);
+        string ISliderControl.GetSliderTooltip() => string.Format((string)"Will delay the signal till {0} seconds after receiving the initial signal.", (object)this.DelayAmount);
 
         protected override void OnPrefabInit()
         {
