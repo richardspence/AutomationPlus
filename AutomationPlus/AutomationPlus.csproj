@@ -74,6 +74,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Alu8Gate.cs" />
+    <Compile Include="Alu8GateConfig.cs" />
+    <Compile Include="Alu8GateStrings.cs" />
     <Compile Include="AluGate.cs" />
     <Compile Include="AluGateConfig.cs" />
     <Compile Include="ListOption.cs" />
