@@ -102,7 +102,11 @@ namespace AutomationPlus
                 key &= value;
                 if (!_animations.ContainsKey(key))
                 {
-                    var valString = $"{value & 0x1}{value & 0x2}{value & 0x4}{value & 0x8}";
+                    var bit1 = 0x1 & value;
+                    var bit2 = 0x1 & (value >> 1);
+                    var bit3 = 0x1 & (value >> 2);
+                    var bit4 = 0x1 & (value >> 3);
+                    var valString = $"{bit1}{bit2}{bit3}{bit4}";
                     _animations.Add(key, $"on_{firstBit}_{valString}");
                 }
                 this.kbac.Play((HashedString)_animations[key], KAnim.PlayMode.Paused);

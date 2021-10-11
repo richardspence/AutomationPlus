@@ -40,11 +40,13 @@ namespace AutomationPlus
                 StringUtils.AddBuildingStrings(PnrgGateConfig.ID, PnrgGateStrings.NAME, PnrgGateStrings.DESC, PnrgGateStrings.EFFECT);
                 StringUtils.AddBuildingStrings(DisplayAdaptorConfig.ID, DisplayAdaptorStrings.NAME, DisplayAdaptorStrings.DESC, DisplayAdaptorStrings.EFFECT);
                 StringUtils.AddBuildingStrings(AluGateConfig.ID, AluGateStrings.NAME, AluGateStrings.DESC, AluGateStrings.EFFECT);
+                StringUtils.AddBuildingStrings(Alu8GateConfig.ID, Alu8GateStrings.NAME, Alu8GateStrings.DESC, Alu8GateStrings.EFFECT);
 
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, DelayGateConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, PnrgGateConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, DisplayAdaptorConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, AluGateConfig.ID);
+                BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, Alu8GateConfig.ID);
             }
 
             [HarmonyPatch(typeof(DetailsScreen), "OnPrefabInit")]
@@ -66,6 +68,7 @@ namespace AutomationPlus
                     BuildingUtils.AddBuildingToTechnology("LogicCircuits", PnrgGateConfig.ID);
                     BuildingUtils.AddBuildingToTechnology("LogicCircuits", DisplayAdaptorConfig.ID);
                     BuildingUtils.AddBuildingToTechnology("LogicCircuits", AluGateConfig.ID);
+                    BuildingUtils.AddBuildingToTechnology("LogicCircuits", Alu8GateConfig.ID);
                 }
             }
         }
