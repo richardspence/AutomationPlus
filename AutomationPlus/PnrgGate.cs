@@ -99,7 +99,7 @@ namespace AutomationPlus
                 var firstBit = GetInputValue() != 0 ? 1 : 0;
                 var key = firstBit << 4;
                 var value = GetOutputValue();
-                key &= value;
+                key |= value;
                 if (!_animations.ContainsKey(key))
                 {
                     var bit1 = 0x1 & value;
