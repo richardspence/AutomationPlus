@@ -45,8 +45,8 @@ jobs:
       uses: juliansangillo/tag-version@v1  
       with:  
         production-branch: main  
-        test-branch: main
-        dev-branch: main
+        test-branch: test
+        dev-branch: dev
     # - name: Patch Build
     #   run: dotnet version -f ./AutomationPlus/AutomationPlus.csproj patch
     - name: Build

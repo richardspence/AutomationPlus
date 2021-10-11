@@ -8,9 +8,9 @@ namespace AutomationPlus
 {
     class Alu8Gate : AluGate
     {
-        public static readonly HashedString INPUT_PORT_ID1B = new HashedString("AluGateInput1");
-        public static readonly HashedString INPUT_PORT_ID2B = new HashedString("AluGateInput2");
-        public static readonly HashedString OUTPUT_PORT_IDB = new HashedString("AluGateOutput");
+        public static readonly HashedString INPUT_PORT_ID1B = new HashedString("AluGateInput1B");
+        public static readonly HashedString INPUT_PORT_ID2B = new HashedString("AluGateInput2B");
+        public static readonly HashedString OUTPUT_PORT_IDB = new HashedString("AluGateOutputB");
 
         public Alu8Gate() : base()
         {
