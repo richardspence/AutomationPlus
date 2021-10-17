@@ -4,7 +4,7 @@
 Copy the referenced dlls into the lib folder via
 
 ```ps1
-$files = '0Harmondy.dll', 'Assembly-CSharp-firstpass.dll', 'Assembly-CSharp.dll', 'Unity.TestMeshPro.dll', 'UnityEngine.CoreModule.dll', 'UnityEngine.dll', 'UnityEngine.TextRenderingModule.dll', 'UnityEngine.UI.dll'
+$files = '0Harmondy.dll', 'Unity.TestMeshPro.dll', 'UnityEngine.CoreModule.dll', 'UnityEngine.dll', 'UnityEngine.TextRenderingModule.dll', 'UnityEngine.UI.dll', 'Unity.TextMeshPro.dll'
 
 foreach ($file in $files){
     & xcopy ${env:ProgramFiles(x86)}\Steam\steamapps\common\OxygenNotIncluded\OxygenNotIncluded_Data\Managed\$file .\lib\ /Y
