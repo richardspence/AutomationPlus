@@ -12,7 +12,6 @@ on:
 
 env:
   DOTNET_VERSION: '5.0.301' # The .NET SDK version to use
-
 jobs:
   build:
 
@@ -24,6 +23,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
