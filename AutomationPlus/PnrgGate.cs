@@ -22,13 +22,6 @@ namespace AutomationPlus
         private LogicPorts ports;
         private KBatchedAnimController kbac;
 
-        private static KAnimHashedString BIT_ONE_SYMBOL = (KAnimHashedString)"bit1_bloom";
-        private static KAnimHashedString BIT_TWO_SYMBOL = (KAnimHashedString)"bit2_bloom";
-        private static KAnimHashedString BIT_THREE_SYMBOL = (KAnimHashedString)"bit3_bloom";
-        private static KAnimHashedString BIT_FOUR_SYMBOL = (KAnimHashedString)"bit4_bloom";
-        private static KAnimHashedString INPUT_SYMBOL = (KAnimHashedString)"input_light_bloom";
-        private Color colorOn = new Color(0.3411765f, 0.7254902f, 0.3686275f);
-        private Color colorOff = new Color(0.9529412f, 0.2901961f, 0.2784314f);
         Dictionary<int, HashedString> _animations = new Dictionary<int, HashedString>();
         [Serialize]
         private int currentValue;

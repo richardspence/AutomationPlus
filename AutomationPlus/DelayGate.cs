@@ -3,8 +3,6 @@ using STRINGS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace AutomationPlus
@@ -12,21 +10,21 @@ namespace AutomationPlus
     static class DelayGateInfoPool
     {
         private static List<DelayGateInfo> _pool = new List<DelayGateInfo>();
-        public static  DelayGateInfo getOrCreate()
+        public static DelayGateInfo getOrCreate()
         {
             var result = _pool.LastOrDefault();
             if (result != null)
             {
-                _pool.RemoveAt(_pool.Count -1);
+                _pool.RemoveAt(_pool.Count - 1);
                 return result;
             }
             return new DelayGateInfo();
         }
 
-        public static  void release(DelayGateInfo obj)
+        public static void release(DelayGateInfo obj)
         {
             // 10 is our max pool size
-            if(DelayGateInfoPool._pool.Count < 10)
+            if (DelayGateInfoPool._pool.Count < 10)
             {
                 DelayGateInfoPool._pool.Add(obj);
                 obj.ticks = 0;
@@ -36,7 +34,7 @@ namespace AutomationPlus
     }
 
     [Serializable]
-   public class DelayGateInfo
+    public class DelayGateInfo
     {
         public int value;
         public int ticks = 0;
@@ -50,9 +48,16 @@ namespace AutomationPlus
             this.journal.Add(info);
         }
 
+        public void clear()
+        {
+            this.journal.ForEach(DelayGateInfoPool.release);
+            this.journal.Clear();
+            this.sumTicks = 0;
+        }
+
         public bool AddTick(int maxTicks)
         {
-            var didChange = false;
+            var didChange = sumTicks+1 == maxTicks;
             var last = this.journal.LastOrDefault();
             if (last != null)
             {
@@ -64,7 +69,7 @@ namespace AutomationPlus
                 {
                     var delta = sumTicks - maxTicks;
                     var first = this.journal.FirstOrDefault();
-                    if(first == null)
+                    if (first == null)
                     {
                         this.sumTicks = 0;
                         didChange = true;
@@ -77,31 +82,33 @@ namespace AutomationPlus
                     }
                     else
                     {
-                        this.journal.Remove(first);
-                        DelayGateInfoPool.release(first);
                         sumTicks -= first.ticks;
                         didChange = true;
+                        this.journal.Remove(first);
+                        DelayGateInfoPool.release(first);
                     }
                 }
             }
 
             return didChange;
         }
-           
+
         public List<DelayGateInfo> journal = new List<DelayGateInfo>();
     }
 
     [SerializationConfig(MemberSerialization.OptIn)]
-    public class DelayGate : LogicGate, ISingleSliderControl, ISliderControl
+    public class DelayGate_OLD : LogicGate, ISingleSliderControl, ISliderControl
     {
-
+        private Color activeTintColor = new Color(0.5411765f, 0.9882353f, 0.2980392f);
+        private Color inactiveTintColor = Color.red;
         [Serialize]
         private float delayAmount = .1f;
         [Serialize]
         private DelayGateInfoObj info = new DelayGateInfoObj();
-        [Serialize]
+        private static KAnimHashedString InputSymbol = (KAnimHashedString)"light_bloom_0";
+        private static KAnimHashedString OutputSymbol = (KAnimHashedString)"light_bloom_1";
 
-        private int delayTicksRemaining;
+
         private MeterController meter;
         [MyCmpAdd]
         private CopyBuildingSettings copyBuildingSettings;
@@ -113,12 +120,11 @@ namespace AutomationPlus
             set
             {
                 this.delayAmount = value;
-                int delayAmountTicks = this.DelayAmountTicks;
-                if (this.delayTicksRemaining <= delayAmountTicks)
-                    return;
-                this.delayTicksRemaining = delayAmountTicks;
             }
         }
+
+        [Serialize]
+        private int CurrentValue;
 
         private int DelayAmountTicks => Mathf.RoundToInt(this.delayAmount / LogicCircuitManager.ClockTickInterval);
 
@@ -157,11 +163,14 @@ namespace AutomationPlus
         protected override void OnSpawn()
         {
             base.OnSpawn();
+
             this.meter = new MeterController((KAnimControllerBase)this.GetComponent<KBatchedAnimController>(), "meter_target", "meter", Meter.Offset.UserSpecified, Grid.SceneLayer.LogicGatesFront, Vector3.zero, (string[])null);
-            this.meter.SetPositionPercent(1f);
+            this.meter?.SetPositionPercent(1f);
         }
 
-        private void Update() => this.meter.SetPositionPercent((this.delayTicksRemaining <= 0 ? 1f : (float)(this.DelayAmountTicks - this.delayTicksRemaining) / (float)this.DelayAmountTicks));
+        private void Update() {
+            this.meter.SetPositionPercent(0f);
+        }
 
 
         public override void LogicTick()
@@ -169,62 +178,70 @@ namespace AutomationPlus
             var didChange = this.info.AddTick(this.DelayAmountTicks);
             var c1 = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.OutputCellOne) is LogicCircuitNetwork);
             var c2 = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.InputCellOne) is LogicCircuitNetwork);
-            if (this.delayTicksRemaining > 0)
-
+            if(!c1 || !c2)
             {
-
-               
-                if (c1 && c2)
-                {
-                    --this.delayTicksRemaining;
-                    didChange = true;
-                }
-                else
-                {
-                    this.delayTicksRemaining = this.DelayAmountTicks;
-                }
-                
+                this.info.clear();
             }
-            if (this.delayTicksRemaining > 0)
+            if (didChange)
             {
-                if (didChange)
-                {
-                    this.OnDelay();
-                }
-                return;
+                this.OnDelay();
             }
         }
 
         protected override int GetCustomValue(int val1, int val2)
         {
             var last = this.info.journal.LastOrDefault();
-            if(last == null || last.value != val1)
+            if (last == null || last.value != val1)
             {
                 var info = DelayGateInfoPool.getOrCreate();
                 info.value = val1;
                 this.info.Add(info);
             }
-            if (this.delayTicksRemaining > 0)
+            var outValue = 0;
+            if (this.info.sumTicks == this.DelayAmountTicks)
             {
-                return 0;
+                outValue= this.info.journal.FirstOrDefault()?.value ?? 0;
             }
-            else
-            {
-                return this.info.journal.FirstOrDefault()?.value ?? 0;
-            }
-
+            this.RefreshColors(val1, outValue);
+            return outValue;
         }
 
         private void OnDelay()
-        {
-             var c1 = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.OutputCellOne) is LogicCircuitNetwork);
+         {
+            var c1 = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.OutputCellOne) is LogicCircuitNetwork);
+            var c2 = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.InputCellOne) is LogicCircuitNetwork);
             if (this.cleaningUp)
                 return;
-            this.delayTicksRemaining = 0;
-            this.meter.SetPositionPercent(1f);
-            if (this.outputValueOne == 0 || !(Game.Instance.logicCircuitSystem.GetNetworkForCell(this.OutputCellOne) is LogicCircuitNetwork))
+            if (!c1)
                 return;
+            this.meter?.SetPositionPercent(1f);
             this.RefreshAnimation();
+            this.RefreshColors(this.GetPortValue(LogicGateBase.PortId.InputOne), this.outputValueOne);
+        }
+
+        private void RefreshColors(int inputVal, int outputValue)
+        {
+            var outputNetwork = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.OutputCellOne) as LogicCircuitNetwork);
+            var inputNetwork = (Game.Instance.logicCircuitSystem.GetNetworkForCell(this.InputCellOne) as LogicCircuitNetwork);
+            var component = this.GetComponent<KBatchedAnimController>();
+            int num = 0;
+            if(inputVal > 0)
+            {
+                num = 1;
+            }if(outputValue > 0)
+            {
+                num = num + 4;
+            }
+            if(num > 0)
+            {
+                component.Play((HashedString)("on_" + num.ToString()));
+            }
+            else
+            {
+                component.Play((HashedString)"off");
+
+            }
+
         }
     }
 }

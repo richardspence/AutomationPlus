@@ -28,7 +28,7 @@ namespace AutomationPlus
             buildingDef.ViewMode = OverlayModes.Logic.ID;
             buildingDef.AudioCategory = "Metal";
             buildingDef.ObjectLayer = ObjectLayer.LogicGate;
-            buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
+            buildingDef.SceneLayer = Grid.SceneLayer.LogicGatesFront;
             buildingDef.AlwaysOperational = true;
             buildingDef.LogicInputPorts = new List<LogicPorts.Port>()   {
                 LogicPorts.Port.RibbonInputPort(DisplayAdaptor.INPUT_PORT_ID, new CellOffset(0, 2), (string) DisplayAdaptorStrings.LOGIC_PORT, (string) DisplayAdaptorStrings.INPUT_PORT_ACTIVE, (string) DisplayAdaptorStrings.INPUT_PORT_INACTIVE , true),

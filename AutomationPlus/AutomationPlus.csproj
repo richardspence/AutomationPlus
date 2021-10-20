@@ -81,12 +81,12 @@
     <Compile Include="ListOption.cs" />
     <Compile Include="AluGateSideScreen.cs" />
     <Compile Include="BuildingUtils.cs" />
-    <Compile Include="DelayGate.cs" />
     <Compile Include="DelayGateConfig.cs" />
     <Compile Include="DisplayAdaptorConfig.cs" />
     <Compile Include="DisplayAdaptor.cs" />
     <Compile Include="AluGateStrings.cs" />
     <Compile Include="DisplayAdaptorStrings.cs" />
+    <Compile Include="DelayGate2.cs" />
     <Compile Include="PnrgGateAnimations.cs" />
     <Compile Include="PnrgGateStrings.cs" />
     <Compile Include="DelayGateStrings.cs" />
@@ -98,6 +98,12 @@
     <Compile Include="StringUtils.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="anim\assets\logic_delay\logic_delay_anim.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="anim\assets\logic_delay\logic_delay_build.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="anim\assets\logic_generator_random\logic_generator_random_anim.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -116,6 +122,11 @@
     <None Include="anim\assets\logic_generator_random\logic_generator_random.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="anim\assets\logic_delay\logic_delay.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

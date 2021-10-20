@@ -11,7 +11,9 @@ namespace AutomationPlus
     class DelayGateConfig : IBuildingConfig
     {
         public static string ID = "DelayGATE";
-        public static string anim = "logic_buffer_kanim";
+        public static string anim = "logic_delay_kanim";
+        //public static string anim = "logic_buffer_kanim";
+        
         public override BuildingDef CreateBuildingDef() => this.CreateBuildingDef(ID, anim, height: 1);
         protected BuildingDef CreateBuildingDef(
     string ID,
@@ -31,7 +33,7 @@ namespace AutomationPlus
             BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, width1, height1, anim1, 10, 3f, tieR0_1, refinedMetals, 1600f, BuildLocationRule.Anywhere, tieR0_2, noise);
             buildingDef.ViewMode = OverlayModes.Logic.ID;
             buildingDef.ObjectLayer = ObjectLayer.LogicGate;
-            buildingDef.SceneLayer = Grid.SceneLayer.LogicGates;
+            buildingDef.SceneLayer = Grid.SceneLayer.LogicGatesFront;
             buildingDef.ThermalConductivity = 0.05f;
             buildingDef.Floodable = false;
             buildingDef.Overheatable = false;
@@ -42,27 +44,21 @@ namespace AutomationPlus
             buildingDef.PermittedRotations = PermittedRotations.R360;
             buildingDef.DragBuild = true;
             LogicGateBase.uiSrcData = Assets.instance.logicModeUIData;
+            buildingDef.LogicInputPorts = new List<LogicPorts.Port>()
+    {
+      new LogicPorts.Port(DelayGate.INPUT_PORT_ID, new CellOffset(0, 0), (string) DELAYGATE.LOGIC_PORT, (string) DELAYGATE.INPUT_PORT_ACTIVE, (string) DELAYGATE.INPUT_PORT_INACTIVE,  true, LogicPortSpriteType.Input , true),
+    };
+            buildingDef.LogicOutputPorts = new List<LogicPorts.Port>()
+    {
+      new LogicPorts.Port(DelayGate.OUTPUT_PORT_ID, new CellOffset(1, 0), (string) DELAYGATE.LOGIC_PORT_OUTPUT, (string) DELAYGATE.OUTPUT_PORT_ACTIVE, (string) DELAYGATE.OUTPUT_PORT_INACTIVE, true, LogicPortSpriteType.Output),
+    };
             GeneratedBuildings.RegisterWithOverlay(OverlayModes.Logic.HighlightItemIDs, ID);
             return buildingDef;
         }
 
-        protected CellOffset[] InputPortOffsets => new CellOffset[1]
- {
-    CellOffset.none
- };
-
-        protected CellOffset[] OutputPortOffsets => new CellOffset[1]
-        {
-    new CellOffset(1, 0)
-        };
         public override void DoPostConfigureComplete(GameObject go)
         {
-            DelayGate logicGateBuffer = go.AddComponent<DelayGate>();
-            logicGateBuffer.op = LogicGateBase.Op.CustomSingle;
-            logicGateBuffer.inputPortOffsets = this.InputPortOffsets;
-            logicGateBuffer.outputPortOffsets = this.OutputPortOffsets;
-            logicGateBuffer.controlPortOffsets = null;
-            go.GetComponent<KPrefabID>().prefabInitFn += (KPrefabID.PrefabFn)(game_object => game_object.GetComponent<DelayGate>().SetPortDescriptions(this.GetDescriptions()));
+            go.AddOrGet<DelayGate>();
             go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
         }
 

@@ -32,5 +32,18 @@ This mod aims to bring about various Automation improvements to Oxygen not Inclu
 </tr>
 </table>
 
-<!-- readme: contributors -start -->
-<!-- readme: contributors -end -->
+#### Collaborators
+
+<table>
+<tr>
+    <td align="center" style="word-wrap: break-word; width: 150.0; height: 150.0">
+        <a href=https://github.com/SCIENTIST2004>
+            <img src="https://avatars.githubusercontent.com/u/35931028?v=4" width="100;"  style="border-radius:50%;align-items:center;justify-content:center;overflow:hidden;padding-top:10px" alt=richardspence/>
+            <br />
+            <sub style="font-size:14px"><b>Andrushka</b></sub>
+        </a>
+    </td>
+</tr>
+
+Special thanks to [Andrushka](https://github.com/SCIENTIST2004) for providing the art and animation assets
+</table>
