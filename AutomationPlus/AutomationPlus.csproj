@@ -106,18 +106,36 @@
     <Compile Include="StringUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="anim\assets\logic_delay\logic_delay_anim.bytes">
+    <Content Include="anim\assets\4bit_alu\4bit_alu_anim.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="anim\assets\logic_delay\logic_delay_build.bytes">
+    </Content>
+    <Content Include="anim\assets\4bit_alu\4bit_alu_build.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="anim\assets\logic_generator_random\logic_generator_random_anim.bytes">
+    </Content>
+    <Content Include="anim\assets\8bit_alu\8bit_alu_anim.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="anim\assets\logic_generator_random\logic_generator_random_build.bytes">
+    </Content>
+    <Content Include="anim\assets\8bit_alu\8bit_alu_build.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+    <Content Include="anim\assets\display_adaptor\display_adaptor_anim.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\display_adaptor\display_adaptor_build.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\logic_delay\logic_delay_anim.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\logic_delay\logic_delay_build.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\logic_generator_random\logic_generator_random_anim.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\logic_generator_random\logic_generator_random_build.bytes">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="mod.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -127,11 +145,20 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="anim\assets\logic_generator_random\logic_generator_random.png">
+    <Content Include="anim\assets\logic_generator_random\logic_generator_random.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="anim\assets\4bit_alu\4bit_alu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\8bit_alu\8bit_alu.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="anim\assets\display_adaptor\display_adaptor.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="anim\assets\logic_delay\logic_delay.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
