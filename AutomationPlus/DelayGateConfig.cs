@@ -62,17 +62,6 @@ namespace AutomationPlus
             go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
         }
 
-        protected LogicGate.LogicGateDescriptions GetDescriptions() => new LogicGate.LogicGateDescriptions()
-        {
-            outputOne = new LogicGate.LogicGateDescriptions.Description()
-            {
-                name = DELAYGATE.OUTPUT_NAME,
-                active = DELAYGATE.OUTPUT_ACTIVE,
-                inactive = DELAYGATE.OUTPUT_INACTIVE
-            }
-        };
-
-
     }
 
 

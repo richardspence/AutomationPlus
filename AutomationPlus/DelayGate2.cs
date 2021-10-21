@@ -133,7 +133,7 @@ namespace AutomationPlus
 
         private int DelayAmountTicks => Mathf.RoundToInt(this.delayAmount / LogicCircuitManager.ClockTickInterval);
 
-        public string SliderTitleKey => "STRINGS.UI.UISIDESCREENS.LOGIC_BUFFER_SIDE_SCREEN.TITLE";
+        public string SliderTitleKey => "AutomationPlus.DELAYGATE.DELAYGATE_SIDESCREEN.TITLE";
 
         public string SliderUnits => (string)UI.UNITSUFFIXES.SECOND;
 
@@ -147,9 +147,9 @@ namespace AutomationPlus
 
         public void SetSliderValue(float value, int index) => this.DelayAmount = value;
 
-        public string GetSliderTooltipKey(int index) => "STRINGS.UI.UISIDESCREENS.LOGIC_BUFFER_SIDE_SCREEN.TOOLTIP";
+        public string GetSliderTooltipKey(int index) => "AutomationPlus.DELAYGATE.DELAYGATE_SIDESCREEN.TOOLTIP";
 
-        string ISliderControl.GetSliderTooltip() => string.Format((string)"Will delay the signal till {0} seconds after receiving the initial signal.", (object)this.DelayAmount);
+        string ISliderControl.GetSliderTooltip() => string.Format((string)Strings.Get(GetSliderTooltipKey(0)), (object)this.DelayAmount);
 
         protected override void OnPrefabInit()
         {

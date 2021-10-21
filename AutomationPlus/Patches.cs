@@ -41,6 +41,7 @@ namespace AutomationPlus
                 StringUtils.AddBuildingStrings(DisplayAdaptorConfig.ID, DisplayAdaptorStrings.NAME, DisplayAdaptorStrings.DESC, DisplayAdaptorStrings.EFFECT);
                 StringUtils.AddBuildingStrings(AluGateConfig.ID, AluGateStrings.NAME, AluGateStrings.DESC, AluGateStrings.EFFECT);
                 StringUtils.AddBuildingStrings(Alu8GateConfig.ID, Alu8GateStrings.NAME, Alu8GateStrings.DESC, Alu8GateStrings.EFFECT);
+                StringUtils.AddSideScreenStrings(typeof(DELAYGATE.DELAYGATE_SIDESCREEN));
 
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, DelayGateConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, PnrgGateConfig.ID);

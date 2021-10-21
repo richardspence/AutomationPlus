@@ -37,5 +37,10 @@ namespace AutomationPlus
             if (recipeDescription != null)
                 Strings.Add($"STRINGS.ITEMS.FOOD.{foodId.ToUpperInvariant()}.RECIPEDESC", recipeDescription);
         }
+
+        public static void AddSideScreenStrings(Type classType){
+            Strings.Add($"{classType.FullName.Replace('+', '.')}.TITLE", (LocString)classType.GetField("TITLE", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null));
+            Strings.Add($"{classType.FullName.Replace('+', '.')}.TOOLTIP", (LocString)classType.GetField("TOOLTIP", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public).GetValue(null));
+        }
     }
 }

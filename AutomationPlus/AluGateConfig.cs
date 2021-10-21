@@ -31,8 +31,8 @@ namespace AutomationPlus
             buildingDef.SceneLayer = Grid.SceneLayer.LogicGatesFront;
             buildingDef.AlwaysOperational = true;
             buildingDef.LogicInputPorts = new List<LogicPorts.Port>()   {
-                LogicPorts.Port.RibbonInputPort(AluGate.INPUT_PORT_ID1, new CellOffset(0, 1), (string) AluGateStrings.INPUT_PORT1, (string) AluGateStrings.INPUT_PORT_ACTIVE, (string) AluGateStrings.INPUT_PORT_INACTIVE , true),
-                LogicPorts.Port.RibbonInputPort(AluGate.INPUT_PORT_ID2, new CellOffset(0, 0), (string) AluGateStrings.INPUT_PORT2, (string) AluGateStrings.INPUT_PORT_ACTIVE, (string) AluGateStrings.INPUT_PORT_INACTIVE , true),
+                LogicPorts.Port.RibbonInputPort(AluGate.INPUT_PORT_ID1, new CellOffset(0, 1), (string) AluGateStrings.INPUT_PORT1, (string) AluGateStrings.INPUT_PORT_ACTIVE, (string) AluGateStrings.INPUT_PORT_INACTIVE , true, true),
+                LogicPorts.Port.RibbonInputPort(AluGate.INPUT_PORT_ID2, new CellOffset(0, 0), (string) AluGateStrings.INPUT_PORT2, (string) AluGateStrings.INPUT_PORT_ACTIVE, (string) AluGateStrings.INPUT_PORT_INACTIVE , true, true),
                 new LogicPorts.Port(AluGate.OP_PORT_ID, new CellOffset(1, 1), AluGateStrings.OP_PORT_DESCRIPTION, AluGateStrings.OP_CODE_ACTIVE, AluGateStrings.OP_CODE_INACTIVE, true, LogicPortSpriteType.ControlInput, true),
             };
             buildingDef.LogicOutputPorts = new List<LogicPorts.Port>()    {

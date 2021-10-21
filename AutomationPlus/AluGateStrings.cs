@@ -10,7 +10,7 @@ namespace AutomationPlus
     class AluGateStrings
     {
         public static LocString NAME = (LocString)STRINGS.UI.FormatAsLink("4-Bit Arithmetic Logical Unit", nameof(AluGate));
-        public static LocString DESC = (LocString)@"
+        public static LocString DESC = (LocString)$@"The ALU can perform multiple operations on the inputs.
 Operator Codes:   
 add = 0x1 (0001)
 subtract = 0x2 (0010),
@@ -19,23 +19,22 @@ modulus = 0x5 (0101),
 exp = 0x6 (0110),
 divide = 0x8 (1000),
 logicalBitRight = 0xD (1101),
-logicalBitLeft = 0xE, (1110)";
+logicalBitLeft = 0xE, (1110)
+
+Signed numbers when enabled sets the ALU into using a twos complement binary number system. When enabled, the first bit when active {UI.FormatAsAutomationState("active", UI.AutomationState.Active)} signifies a negative number.";
+
         public static LocString EFFECT = (LocString)("Performs 4-bit arithmetic operations on the input parameters");
-        public static LocString OUTPUT_NAME = (LocString)"XXXOUTPUT";
-        public static LocString OUTPUT_ACTIVE = (LocString)("XXXSends a " + UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active) + " while receiving " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + ". After receiving " + UI.FormatAsAutomationState("Red", UI.AutomationState.Standby) + ", will continue sending " + UI.FormatAsAutomationState("Green", UI.AutomationState.Active) + " until the timer has expired");
-        public static LocString OUTPUT_INACTIVE = (LocString)("XXXOtherwise, sends a " + UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby) + ".");
+        public static LocString OUTPUT_NAME = (LocString)"OUTPUT";
+        public static LocString OUTPUT_ACTIVE = (LocString)($"Sends a {UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active)} on each bit based on the result of the operation" );
+        public static LocString OUTPUT_INACTIVE = (LocString)($"Sends a {UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby)} on each bit based on the result of the operation");
 
-        public static string LOGIC_PORT = "LOGIC_PORT";
-        public static string INPUT_PORT1 = "INPUT_PORT1";
-        public static string INPUT_PORT2 = "INPUT_PORT1";
-        public static string INPUT_PORT_ACTIVE = "INPUT_PORT_ACTIVE";
-        public static string INPUT_PORT_INACTIVE = "INPUT_PORT_INACTIVE";
-        public static string LOGIC_PORT_OUTPUT = "LOGIC_PORT_OUTPUT";
-        public static string OUTPUT_PORT_ACTIVE = "OUTPUT_PORT_ACTIVE";
-        public static string OUTPUT_PORT_INACTIVE = "OUTPUT_PORT_INACTIVE";
+        public static string INPUT_PORT1 = "Lefthand value";
+        public static string INPUT_PORT2 = "Righthand Value";
+        public static string INPUT_PORT_ACTIVE = $"The input number based on binary format";
+        public static string INPUT_PORT_INACTIVE = $"The input number based on binary format";
 
-        public static string OP_PORT_DESCRIPTION { get; internal set; }
-        public static string OP_CODE_ACTIVE { get; internal set; }
-        public static string OP_CODE_INACTIVE { get; internal set; }
+        public static string OP_PORT_DESCRIPTION = "OPERATOR PORT";
+        public static string OP_CODE_ACTIVE = "See Description for op codes and meanings";
+        public static string OP_CODE_INACTIVE = "See Description for op codes and meanings";
     }
 }
