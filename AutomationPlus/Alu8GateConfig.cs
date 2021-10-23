@@ -50,7 +50,7 @@ namespace AutomationPlus
         public override void DoPostConfigureComplete(GameObject go)
         {
             go.AddOrGet<Alu8Gate>();
-            go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits);
+            go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
         }
     }
 }

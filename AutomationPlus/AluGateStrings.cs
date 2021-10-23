@@ -23,18 +23,26 @@ logicalBitLeft = 0xE, (1110)
 
 Signed numbers when enabled sets the ALU into using a twos complement binary number system. When enabled, the first bit when active {UI.FormatAsAutomationState("active", UI.AutomationState.Active)} signifies a negative number.";
 
-        public static LocString EFFECT = (LocString)("Performs 4-bit arithmetic operations on the input parameters");
-        public static LocString OUTPUT_NAME = (LocString)"OUTPUT";
-        public static LocString OUTPUT_ACTIVE = (LocString)($"Sends a {UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active)} on each bit based on the result of the operation" );
-        public static LocString OUTPUT_INACTIVE = (LocString)($"Sends a {UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby)} on each bit based on the result of the operation");
+        public static LocString EFFECT = ("Performs 4-bit arithmetic operations on the input parameters");
+        public static LocString OUTPUT_NAME = "OUTPUT";
+        public static LocString OUTPUT_ACTIVE = ($"Sends a {UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active)} on each bit based on the result of the operation" );
+        public static LocString OUTPUT_INACTIVE = ($"Sends a {UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby)} on each bit based on the result of the operation");
 
-        public static string INPUT_PORT1 = "Lefthand value";
-        public static string INPUT_PORT2 = "Righthand Value";
-        public static string INPUT_PORT_ACTIVE = $"The input number based on binary format";
-        public static string INPUT_PORT_INACTIVE = $"The input number based on binary format";
+        public static LocString INPUT_PORT1 = "Lefthand value";
+        public static LocString INPUT_PORT2 = "Righthand Value";
+        public static LocString INPUT_PORT_ACTIVE = $"The input number based on binary format";
+        public static LocString INPUT_PORT_INACTIVE = $"The input number based on binary format";
 
-        public static string OP_PORT_DESCRIPTION = "OPERATOR PORT";
-        public static string OP_CODE_ACTIVE = "See Description for op codes and meanings";
-        public static string OP_CODE_INACTIVE = "See Description for op codes and meanings";
+        public static LocString OP_PORT_DESCRIPTION = "OPERATOR PORT";
+        public static LocString OP_CODE_ACTIVE = "See Description for op codes and meanings";
+        public static LocString OP_CODE_INACTIVE = "See Description for op codes and meanings";
+
+        public static LocString SIDESCREEN_TITLE = "Alu Configuration";
+
+        public class SIDESCREEN
+        {
+            public static LocString TITLE = "Alu Configuration";
+            public static LocString TOOLTIP = $"Will delay the current {UI.FormatAsAutomationState("Green Signal", UI.AutomationState.Active)} or {UI.FormatAsAutomationState("Red Signal", UI.AutomationState.Standby)} for <b>{0} seconds</b>";
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace AutomationPlus
         private AluGate targetAluGate;
         public AluGateSideScreen()
         {
-            titleKey = "AluGateConfigurationTitle";
+            titleKey = "AutomationPlus.AluGateStrings.SIDESCREEN_TITLE";
         }
         private GameObject toggle;
         private GameObject combo;
@@ -32,7 +32,6 @@ namespace AutomationPlus
         private GameObject lblInput1;
         private GameObject lblInput2;
         private GameObject lblOutput1;
-        private GameObject lblOutput2;
 
         public override bool IsValidForTarget(GameObject target)
         {
@@ -129,14 +128,6 @@ namespace AutomationPlus
                 Text = " ",
                 TextStyle = PUITuning.Fonts.TextDarkStyle
             }.AddTo(row3);
-
-            //var lblOutput2 = new PLabel("lblInput1")
-            //{
-            //    TextAlignment = TextAnchor.MiddleRight,
-            //    ToolTip = tooltip,
-            //    Text = " ",
-            //    TextStyle = PUITuning.Fonts.TextDarkStyle
-            //}.AddTo(row3); 
 
             var defaultStyle = PUITuning.Fonts.UIDarkStyle;
             var errorStyle = ScriptableObject.CreateInstance<TextStyleSetting>();

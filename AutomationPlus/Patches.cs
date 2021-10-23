@@ -26,8 +26,6 @@ namespace AutomationPlus
             {
                 Debug.Log("I execute after Db.Initialize!");
             }
-
-            
         }
 
         [HarmonyPatch(typeof(GeneratedBuildings))]
@@ -41,7 +39,11 @@ namespace AutomationPlus
                 StringUtils.AddBuildingStrings(DisplayAdaptorConfig.ID, DisplayAdaptorStrings.NAME, DisplayAdaptorStrings.DESC, DisplayAdaptorStrings.EFFECT);
                 StringUtils.AddBuildingStrings(AluGateConfig.ID, AluGateStrings.NAME, AluGateStrings.DESC, AluGateStrings.EFFECT);
                 StringUtils.AddBuildingStrings(Alu8GateConfig.ID, Alu8GateStrings.NAME, Alu8GateStrings.DESC, Alu8GateStrings.EFFECT);
-                StringUtils.AddSideScreenStrings(typeof(DELAYGATE.DELAYGATE_SIDESCREEN));
+
+                StringUtils.AddStringTypes(typeof(DELAYGATE));
+                StringUtils.AddStringTypes(typeof(AluGateStrings));
+                StringUtils.AddStringTypes(typeof(Alu8GateStrings));
+                StringUtils.AddStringTypes(typeof(DisplayAdaptorStrings));
 
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, DelayGateConfig.ID);
                 BuildingUtils.AddBuildingToPlanScreen(PlanMenuCategory.Automation, PnrgGateConfig.ID);
@@ -56,6 +58,7 @@ namespace AutomationPlus
                 internal static void Postfix()
                 {
                     PUIUtils.AddSideScreenContent<AluGateSideScreen>();
+                    PUIUtils.AddSideScreenContent<DisplayAdaptorSideScreen>();
                 }
             }
 

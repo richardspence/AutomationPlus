@@ -18,15 +18,15 @@ namespace AutomationPlus
         public static LocString EFFECT = (LocString)("Performs 8-bit arithmetic operations on the input parameters");
 
 
-        public static string INPUT_PORT1 = "First 4 bits of Lefthand Input";
-        public static string INPUT_PORT1B = "Second 4 bits of Lefthand Input";
-        public static string INPUT_PORT2 = "First 4 bits of Righthand Input";
-        public static string INPUT_PORT2B = "Second 4 bits of Righthand Input";
-        public static string INPUT_PORT_ACTIVE = AluGateStrings.INPUT_PORT_ACTIVE;
-        public static string INPUT_PORT_INACTIVE = AluGateStrings.INPUT_PORT_INACTIVE;
+        public static LocString INPUT_PORT1 = "First 4 bits of Lefthand Input";
+        public static LocString INPUT_PORT1B = "Second 4 bits of Lefthand Input";
+        public static LocString INPUT_PORT2 = "First 4 bits of Righthand Input";
+        public static LocString INPUT_PORT2B = "Second 4 bits of Righthand Input";
+        public static LocString INPUT_PORT_ACTIVE = AluGateStrings.INPUT_PORT_ACTIVE;
+        public static LocString INPUT_PORT_INACTIVE = AluGateStrings.INPUT_PORT_INACTIVE;
 
-        public static string OP_PORT_DESCRIPTION = AluGateStrings.OP_PORT_DESCRIPTION;
-        public static string OP_CODE_ACTIVE= AluGateStrings.OP_CODE_ACTIVE;
-        public static string OP_CODE_INACTIVE = AluGateStrings.OP_CODE_INACTIVE;
+        public static LocString OP_PORT_DESCRIPTION = AluGateStrings.OP_PORT_DESCRIPTION;
+        public static LocString OP_CODE_ACTIVE = AluGateStrings.OP_CODE_ACTIVE;
+        public static LocString OP_CODE_INACTIVE = AluGateStrings.OP_CODE_INACTIVE;
     }
 }

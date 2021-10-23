@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
+using static EventSystem;
 
 namespace AutomationPlus
 {
@@ -37,6 +39,17 @@ namespace AutomationPlus
 
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
+            if (!(arg is int))
+            {
+                if (!string.IsNullOrEmpty(format))
+                {
+                    return string.Format(format, arg);
+                }
+                else
+                {
+                    return arg.ToString();
+                }
+            }
             // Check whether this is an appropriate callback
             if (!this.Equals(formatProvider))
                 return null;
@@ -54,6 +67,10 @@ namespace AutomationPlus
             if (isTwosComplement)
             {
                 normalValue = BinaryUtils.GetValue(value, bits);
+            }
+            if (primary == "H")
+            {
+                return "0x" + Convert.ToString(value, 16);
             }
             if (primary == "D")
             {
@@ -119,7 +136,7 @@ namespace AutomationPlus
             var minValue = _minValues[bits];
             if (IsNegative(value, bits))
             {
-                return - ((value ^ minValue) + 1);
+                return -((value ^ minValue) + 1);
             }
             else
             {
@@ -130,9 +147,9 @@ namespace AutomationPlus
 
     struct AluValues
     {
-       public string inputValue1;
-       public string inputValue2;
-       public string outputValue;
+        public string inputValue1;
+        public string inputValue2;
+        public string outputValue;
     }
 
     class AluGate : KMonoBehaviour
@@ -145,6 +162,7 @@ namespace AutomationPlus
         public static readonly HashedString OP_PORT_ID = new HashedString("AluGateOpCode");
 
         public event EventHandler ValueChanged;
+        private KBatchedAnimController kbac;
 
         [Serialize]
         protected int currentValue = 0;
@@ -162,26 +180,50 @@ namespace AutomationPlus
                 this.RecalcValues();
             }
         }
+
+        private Color activeTintColor = new Color(137 / 255f, 252 / 255f, 76 / 255f);
+        private Color inactiveTintColor = Color.red;
+        private Color disabledColor = new Color(79 / 255f, 93 / 255f, 71 / 255f); //#4F5D47
+
         //private static readonly EventSystem.IntraObjectHandler<AluGate> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<AluGate>((component, data) => component.OnLogicValueChanged(data));
         protected LogicPorts ports;
 
         public AluGate() : base()
         {
-          
+
         }
 
         protected int maxValue = 0xf;
         protected int bits = 4;
+        [Serialize]
+        private bool _isTwosComplement;
 
-        public bool isTwosComplement = true;
+        public bool isTwosComplement
+        {
+            get { return _isTwosComplement; }
+            set
+            {
+                _isTwosComplement = value;
+                RefreshAnimations();
+            }
+        }
 
-        public string SideScreenTitleKey => "Foo";
+
 
 
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
-            //this.Subscribe<PnrgGate>(-905833192, PnrgGate.OnCopySettingsDelegate);
+            this.Subscribe<AluGate>(-905833192, (IntraObjectHandler<AluGate>)((comp, data) => comp.OnCopySettings(data)));
+        }
+
+        private void OnCopySettings(object data)
+        {
+            AluGate component = ((GameObject)data).GetComponent<AluGate>();
+            if (!((UnityEngine.Object)component != (UnityEngine.Object)null))
+                return;
+            this.isTwosComplement = component.isTwosComplement;
+            this.opCode = component.opCode;
         }
 
         public bool isOpCodeConnected()
@@ -193,8 +235,11 @@ namespace AutomationPlus
         {
             base.OnSpawn();
             Action<AluGate, object> p = (c, d) => c.OnLogicValueChanged(d);
+            this.kbac = this.GetComponent<KBatchedAnimController>();
+            this.kbac.Play((HashedString)"off");
             this.Subscribe<AluGate>(-801688580, p);
             this.ports = this.GetComponent<LogicPorts>();
+            RefreshAnimations();
         }
 
         public virtual int GetInputValue1()
@@ -263,8 +308,46 @@ namespace AutomationPlus
 
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
             if (logicValueChanged.portID == AluGate.OUTPUT_PORT_ID)
+            {
+                RefreshAnimations();
                 return;
+            }
             RecalcValues();
+            RefreshAnimations();
+        }
+
+
+        private void RefreshAnimations()
+        {
+            var val1 = GetInputValue1();
+            var val2 = GetInputValue2();
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
+            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
+            var nwOp = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
+            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID));
+            this.TintSymbolConditionally(nwOp, () => nwOp.OutputValue > 0, this.kbac, "light5_bloom");
+
+
+            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(3, currentValue), this.kbac, "light1_bloom");
+            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(2, currentValue), this.kbac, "light2_bloom");
+            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(1, currentValue), this.kbac, "light3_bloom");
+            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(0, currentValue), this.kbac, "light4_bloom");
+
+            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(3, val2), this.kbac, "light6_bloom");
+            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(2, val2), this.kbac, "light7_bloom");
+            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(1, val2), this.kbac, "light8_bloom");
+            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(0, val2), this.kbac, "light9_bloom");
+
+            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(3, val1), this.kbac, "light10_bloom");
+            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(2, val1), this.kbac, "light11_bloom");
+            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(1, val1), this.kbac, "light12_bloom");
+            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(0, val1), this.kbac, "light13_bloom");
+
+
+            if (nw1 != null && nw2 != null && nwOut != null)
+            {
+                LogicCircuitManager.ToggleNoWireConnected(false, this.gameObject);
+            }
         }
 
         private void RecalcValues()
@@ -329,7 +412,50 @@ namespace AutomationPlus
             this.UpdateValue();
         }
 
+
+
+        private void ShowSymbolConditionally(
+          bool showAnything,
+          bool active,
+          KBatchedAnimController kbac,
+          KAnimHashedString ifTrue,
+          KAnimHashedString ifFalse)
+        {
+            if (!showAnything)
+            {
+                kbac.SetSymbolVisiblity(ifTrue, false);
+                kbac.SetSymbolVisiblity(ifFalse, false);
+            }
+            else
+            {
+                kbac.SetSymbolVisiblity(ifTrue, active);
+                kbac.SetSymbolVisiblity(ifFalse, !active);
+            }
+        }
+
+        private void TintSymbolConditionally(
+          object tintAnything,
+          Func<bool> condition,
+          KBatchedAnimController kbac,
+          KAnimHashedString symbol
+         )
+        {
+            if (tintAnything != null)
+                kbac.SetSymbolTint(symbol, condition() ? activeTintColor : inactiveTintColor);
+            else
+                kbac.SetSymbolTint(symbol, disabledColor);
+        }
+
+        private void SetBloomSymbolShowing(
+          bool showing,
+          KBatchedAnimController kbac,
+          KAnimHashedString symbol,
+          KAnimHashedString bloomSymbol)
+        {
+            kbac.SetSymbolVisiblity(bloomSymbol, showing);
+            kbac.SetSymbolVisiblity(symbol, !showing);
+        }
     }
 
-   
+
 }

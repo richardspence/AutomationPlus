@@ -49,7 +49,7 @@ namespace AutomationPlus
         public override void DoPostConfigureComplete(GameObject go)
         {
             go.AddOrGet<DisplayAdaptor>();
-            go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayInFrontOfConduits);
+            go.GetComponent<KPrefabID>().AddTag(GameTags.OverlayBehindConduits);
         }
     }
 }
