@@ -71,7 +71,7 @@ namespace AutomationPlus
                 logicCircuitNetwork = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(PnrgGate.OUTPUT_PORT_ID));
             return logicCircuitNetwork;
         }
-        
+
         public void OnLogicValueChanged(object data)
         {
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
@@ -86,14 +86,10 @@ namespace AutomationPlus
                     this.GetComponent<LogicPorts>().SendSignal(PnrgGate.OUTPUT_PORT_ID, currentValue);
                     changed = true;
                 }
-                else
+                else if (setValue != i)
                 {
-                    if (setValue != 0)
-                    {
-                        changed = true;
-                        setValue = 0;
-                    }
-                    
+                    changed = true;
+                    setValue = i;
                 }
             }
             if (changed)
@@ -108,7 +104,7 @@ namespace AutomationPlus
             LogicCircuitNetwork outputNetwork = this.GetOutputNetwork();
             if (inputNetwork != null || outputNetwork != null)
             {
-                var firstBit = setValue > 0 ? 1 : 0;
+                var firstBit = GetInputValue() > 0 ? 1 : 0;
                 var key = firstBit << 4;
                 var value = GetOutputValue();
                 key |= value;
