@@ -32,14 +32,14 @@ namespace AutomationPlus
             buildingDef.AlwaysOperational = true;
             buildingDef.LogicInputPorts = new List<LogicPorts.Port>()   {
                 LogicPorts.Port.RibbonInputPort(Alu8Gate.INPUT_PORT_ID1B, new CellOffset(0, 3), (string) Alu8GateStrings.INPUT_PORT1B, (string) Alu8GateStrings.INPUT_PORT_ACTIVE, (string) Alu8GateStrings.INPUT_PORT_INACTIVE , true, true),
-                LogicPorts.Port.RibbonInputPort(Alu8Gate.INPUT_PORT_ID1, new CellOffset(0, 2), (string) Alu8GateStrings.INPUT_PORT1, (string) Alu8GateStrings.INPUT_PORT_ACTIVE, (string) Alu8GateStrings.INPUT_PORT_INACTIVE , true, true),
+                LogicPorts.Port.RibbonInputPort(AluGate.INPUT_PORT_ID1, new CellOffset(0, 2), (string) Alu8GateStrings.INPUT_PORT1, (string) Alu8GateStrings.INPUT_PORT_ACTIVE, (string) Alu8GateStrings.INPUT_PORT_INACTIVE , true, true),
                 LogicPorts.Port.RibbonInputPort(Alu8Gate.INPUT_PORT_ID2B, new CellOffset(0, 1), (string) Alu8GateStrings.INPUT_PORT2B, (string) Alu8GateStrings.INPUT_PORT_ACTIVE, (string) Alu8GateStrings.INPUT_PORT_INACTIVE , true, true),
-                LogicPorts.Port.RibbonInputPort(Alu8Gate.INPUT_PORT_ID2, new CellOffset(0, 0), (string) Alu8GateStrings.INPUT_PORT2, (string) Alu8GateStrings.INPUT_PORT_ACTIVE, (string) Alu8GateStrings.INPUT_PORT_INACTIVE , true, true),
-                new LogicPorts.Port(Alu8Gate.OP_PORT_ID, new CellOffset(1, 0), Alu8GateStrings.OP_PORT_DESCRIPTION, Alu8GateStrings.OP_CODE_ACTIVE, Alu8GateStrings.OP_CODE_INACTIVE, true, LogicPortSpriteType.ControlInput, true),
+                LogicPorts.Port.RibbonInputPort(AluGate.INPUT_PORT_ID2, new CellOffset(0, 0), (string) Alu8GateStrings.INPUT_PORT2, (string) Alu8GateStrings.INPUT_PORT_ACTIVE, (string) Alu8GateStrings.INPUT_PORT_INACTIVE , true, true),
+                new LogicPorts.Port(AluGate.OP_PORT_ID, new CellOffset(1, 0), Alu8GateStrings.OP_PORT_DESCRIPTION, Alu8GateStrings.OP_CODE_ACTIVE, Alu8GateStrings.OP_CODE_INACTIVE, true, LogicPortSpriteType.ControlInput, true),
             };
             buildingDef.LogicOutputPorts = new List<LogicPorts.Port>()    {
                 LogicPorts.Port.RibbonOutputPort(Alu8Gate.OUTPUT_PORT_IDB, new CellOffset(1, 3), Alu8GateStrings.OUTPUT_NAMEB, Alu8GateStrings.OUTPUT_ACTIVE, Alu8GateStrings.OUTPUT_INACTIVE, true, true),
-                LogicPorts.Port.RibbonOutputPort(Alu8Gate.OUTPUT_PORT_ID, new CellOffset(1, 2), Alu8GateStrings.OUTPUT_NAME, Alu8GateStrings.OUTPUT_ACTIVE, Alu8GateStrings.OUTPUT_INACTIVE, true, true),
+                LogicPorts.Port.RibbonOutputPort(AluGate.OUTPUT_PORT_ID, new CellOffset(1, 2), Alu8GateStrings.OUTPUT_NAME, Alu8GateStrings.OUTPUT_ACTIVE, Alu8GateStrings.OUTPUT_INACTIVE, true, true),
             };
             SoundEventVolumeCache.instance.AddVolume("door_internal_kanim", "Open_DoorInternal", TUNING.NOISE_POLLUTION.NOISY.TIER3);
             SoundEventVolumeCache.instance.AddVolume("door_internal_kanim", "Close_DoorInternal", TUNING.NOISE_POLLUTION.NOISY.TIER3);

@@ -64,14 +64,18 @@ namespace AutomationPlus
             var last = this.journal.LastOrDefault();
             if (last != null)
             {
+                //exit early if no change
+                if (last.ticks == maxTicks)
+                {
+                    return false;
+                }
                 last.ticks++;
                 didChange = last.ticks == 1;
                 sumTicks++;
-
-                while (sumTicks > maxTicks)
+                var first = this.journal.First();
+                while (sumTicks > maxTicks && first != null)
                 {
                     var delta = sumTicks - maxTicks;
-                    var first = this.journal.FirstOrDefault();
                     if (first == null)
                     {
                         this.sumTicks = 0;
@@ -89,6 +93,7 @@ namespace AutomationPlus
                         didChange = true;
                         this.journal.Remove(first);
                         DelayGateInfoPool.release(first);
+                        first = this.journal.FirstOrDefault();
                     }
                 }
             }

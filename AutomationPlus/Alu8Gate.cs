@@ -36,7 +36,13 @@ namespace AutomationPlus
 
         }
 
-        protected virtual void UpdateValue()
+        protected override bool ShouldRecalcValue(LogicValueChanged logicValueChanged)
+        {
+            return base.ShouldRecalcValue(logicValueChanged)
+                && logicValueChanged.portID != Alu8Gate.OUTPUT_PORT_IDB;
+        }
+
+        protected override void UpdateValue()
         {
             var val1 = this.currentValue >> 3;
             var val2 = this.currentValue | 0xf;

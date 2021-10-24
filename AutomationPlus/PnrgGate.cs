@@ -23,6 +23,9 @@ namespace AutomationPlus
         private KBatchedAnimController kbac;
 
         Dictionary<int, HashedString> _animations = new Dictionary<int, HashedString>();
+
+        [Serialize]
+        private int setValue;
         [Serialize]
         private int currentValue;
 
@@ -68,28 +71,44 @@ namespace AutomationPlus
                 logicCircuitNetwork = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(PnrgGate.OUTPUT_PORT_ID));
             return logicCircuitNetwork;
         }
-
+        
         public void OnLogicValueChanged(object data)
         {
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
+            var changed = false;
             if (logicValueChanged.portID == PnrgGate.INPUT_PORT_ID)
             {
-                if (logicValueChanged.newValue != 0)
+                var i = GetInputValue();
+                if (i != 0 && setValue == 0)
                 {
                     this.currentValue = _random.Next() % 15;
+                    setValue = i;
+                    this.GetComponent<LogicPorts>().SendSignal(PnrgGate.OUTPUT_PORT_ID, currentValue);
+                    changed = true;
                 }
-                this.GetComponent<LogicPorts>().SendSignal(PnrgGate.OUTPUT_PORT_ID, currentValue);
+                else
+                {
+                    if (setValue != 0)
+                    {
+                        changed = true;
+                        setValue = 0;
+                    }
+                    
+                }
             }
-            UpdateVisuals();
+            if (changed)
+            {
+                UpdateVisuals();
+            }
         }
 
         public void UpdateVisuals()
         {
             LogicCircuitNetwork inputNetwork = this.GetInputNetwork();
             LogicCircuitNetwork outputNetwork = this.GetOutputNetwork();
-            if(inputNetwork != null || outputNetwork != null)
+            if (inputNetwork != null || outputNetwork != null)
             {
-                var firstBit = GetInputValue() != 0 ? 1 : 0;
+                var firstBit = setValue > 0 ? 1 : 0;
                 var key = firstBit << 4;
                 var value = GetOutputValue();
                 key |= value;
@@ -108,7 +127,7 @@ namespace AutomationPlus
             {
                 this.kbac.Play("off");
             }
-            
+
         }
 
         public bool IsBitActive(int bit)

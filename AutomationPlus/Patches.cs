@@ -1,5 +1,7 @@
 using HarmonyLib;
 using PeterHan.PLib.UI;
+using System;
+using System.Reflection;
 using static STRINGS.UI.BUILDCATEGORIES;
 
 namespace AutomationPlus
@@ -19,12 +21,12 @@ namespace AutomationPlus
         {
             public static void Prefix()
             {
-                Debug.Log("I execute before Db.Initialize!");
             }
 
             public static void Postfix()
             {
-                Debug.Log("I execute after Db.Initialize!");
+                var assem = Assembly.GetExecutingAssembly();
+                Debug.Log($"Loaded MOD: {assem?.FullName}");
             }
         }
 

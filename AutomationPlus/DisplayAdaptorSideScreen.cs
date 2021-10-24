@@ -16,11 +16,7 @@ namespace AutomationPlus
             titleKey = StringUtils.GetStringKey(()=>DisplayAdaptorStrings.SideScreen.TITLE);
         }
         private GameObject toggle;
-        private GameObject combo;
-        private GameObject invalidWarning;
         private GameObject lblInput1;
-        private GameObject lblInput2;
-        private GameObject lblOutput1;
 
         public override bool IsValidForTarget(GameObject target)
         {
@@ -92,7 +88,6 @@ namespace AutomationPlus
 
         private void OnToggleChanged(int newValue)
         {
-            Debug.Log($"SS:New Value: {newValue}");
             this.target.IsHexMode = newValue != PCheckBox.STATE_CHECKED;
             this.UpdateVisuals();
         }
@@ -100,7 +95,6 @@ namespace AutomationPlus
         public override void SetTarget(GameObject target)
         {
 
-            Debug.Log($"SS:SetTarget");
             base.SetTarget(target);
             this.target = target.GetComponent<DisplayAdaptor>();
             this.UpdateVisuals();
@@ -109,8 +103,6 @@ namespace AutomationPlus
 
         private void UpdateVisuals()
         {
-            Debug.Break();
-            Debug.Log($"SS:UpdateVisuals");
             if (this.toggle != null && this.target != null)
             {
                 PCheckBox.SetCheckState(this.toggle, target.IsHexMode ? PCheckBox.STATE_CHECKED: PCheckBox.STATE_UNCHECKED);

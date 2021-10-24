@@ -9,13 +9,13 @@ namespace AutomationPlus
 {
     class Alu8GateStrings
     {
-        public static LocString NAME = (LocString)STRINGS.UI.FormatAsLink("8-Bit Arithmetic Logical Unit", nameof(Alu8Gate));
+        public static LocString NAME = STRINGS.UI.FormatAsLink("8-Bit Arithmetic Logical Unit", nameof(Alu8Gate));
         public static LocString DESC = AluGateStrings.DESC;
-        public static LocString OUTPUT_NAME = (LocString)"First 4 bits of OUTPUT";
-        public static LocString OUTPUT_NAMEB = (LocString)"Second 4 bits of OUTPUT";
+        public static LocString OUTPUT_NAME = "First 4 bits of OUTPUT";
+        public static LocString OUTPUT_NAMEB = "Second 4 bits of OUTPUT";
         public static LocString OUTPUT_ACTIVE = AluGateStrings.OUTPUT_ACTIVE;
         public static LocString OUTPUT_INACTIVE = AluGateStrings.OUTPUT_INACTIVE;
-        public static LocString EFFECT = (LocString)("Performs 8-bit arithmetic operations on the input parameters");
+        public static LocString EFFECT = "Performs 8-bit arithmetic operations on the input parameters";
 
 
         public static LocString INPUT_PORT1 = "First 4 bits of Lefthand Input";

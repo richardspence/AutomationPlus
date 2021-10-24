@@ -185,7 +185,6 @@ namespace AutomationPlus
         private Color inactiveTintColor = Color.red;
         private Color disabledColor = new Color(79 / 255f, 93 / 255f, 71 / 255f); //#4F5D47
 
-        //private static readonly EventSystem.IntraObjectHandler<AluGate> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<AluGate>((component, data) => component.OnLogicValueChanged(data));
         protected LogicPorts ports;
 
         public AluGate() : base()
@@ -299,6 +298,10 @@ namespace AutomationPlus
             this.GetComponent<LogicPorts>().SendSignal(AluGate.OUTPUT_PORT_ID, currentValue);
         }
 
+        protected virtual bool ShouldRecalcValue(LogicValueChanged logicValueChanged) {
+            return !(logicValueChanged.portID == AluGate.OUTPUT_PORT_ID);
+        }
+
         public void OnLogicValueChanged(object data)
         {
             if (this.ValueChanged != null)
@@ -307,7 +310,7 @@ namespace AutomationPlus
             }
 
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
-            if (logicValueChanged.portID == AluGate.OUTPUT_PORT_ID)
+            if (!ShouldRecalcValue(logicValueChanged))
             {
                 RefreshAnimations();
                 return;
@@ -325,23 +328,54 @@ namespace AutomationPlus
             var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
             var nwOp = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
             var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID));
-            this.TintSymbolConditionally(nwOp, () => nwOp.OutputValue > 0, this.kbac, "light5_bloom");
 
+            if (true)
+            {
+                this.TintSymbolConditionally(nwOp, () => nwOp.OutputValue > 0, this.kbac, "light5_bloom");
 
-            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(3, currentValue), this.kbac, "light1_bloom");
-            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(2, currentValue), this.kbac, "light2_bloom");
-            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(1, currentValue), this.kbac, "light3_bloom");
-            this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(0, currentValue), this.kbac, "light4_bloom");
+                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(3, currentValue), this.kbac, "light1_bloom");
+                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(2, currentValue), this.kbac, "light2_bloom");
+                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(1, currentValue), this.kbac, "light3_bloom");
+                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(0, currentValue), this.kbac, "light4_bloom");
 
-            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(3, val2), this.kbac, "light6_bloom");
-            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(2, val2), this.kbac, "light7_bloom");
-            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(1, val2), this.kbac, "light8_bloom");
-            this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(0, val2), this.kbac, "light9_bloom");
+                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(3, val2), this.kbac, "light6_bloom");
+                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(2, val2), this.kbac, "light7_bloom");
+                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(1, val2), this.kbac, "light8_bloom");
+                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(0, val2), this.kbac, "light9_bloom");
 
-            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(3, val1), this.kbac, "light10_bloom");
-            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(2, val1), this.kbac, "light11_bloom");
-            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(1, val1), this.kbac, "light12_bloom");
-            this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(0, val1), this.kbac, "light13_bloom");
+                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(3, val1), this.kbac, "light10_bloom");
+                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(2, val1), this.kbac, "light11_bloom");
+                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(1, val1), this.kbac, "light12_bloom");
+                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(0, val1), this.kbac, "light13_bloom");
+            }
+            else
+            {
+                if (nw1 != null && nw2 != null && nwOut != null)
+                {
+                    this.kbac.Play("on_0");
+                    ShowSymbolConditionally(nwOp?.OutputValue > 0, $"light_bloom_green_{4}", $"light_bloom_red_{4}");
+
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(3, currentValue), $"light_bloom_green_{0}", $"light_bloom_red_{0}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(2, currentValue), $"light_bloom_green_{1}", $"light_bloom_red_{1}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(1, currentValue), $"light_bloom_green_{2}", $"light_bloom_red_{2}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(0, currentValue), $"light_bloom_green_{3}", $"light_bloom_red_{3}");
+
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(3, val2), $"light_bloom_green_{5}", $"light_bloom_red_{5}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(2, val2), $"light_bloom_green_{6}", $"light_bloom_red_{6}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(1, val2), $"light_bloom_green_{7}", $"light_bloom_red_{7}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(0, val2), $"light_bloom_green_{8}", $"light_bloom_red_{8}");
+
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(3, val1), $"light_bloom_green_{9}", $"light_bloom_red_{9}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(2, val1), $"light_bloom_green_{10}", $"light_bloom_red_{10}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(1, val1), $"light_bloom_green_{11}", $"light_bloom_red_{11}");
+                    ShowSymbolConditionally(LogicCircuitNetwork.IsBitActive(0, val1), $"light_bloom_green_{12}", $"light_bloom_red_{12}");
+
+                }
+                else
+                {
+                    this.kbac.Play("off");
+                }
+            }
 
 
             if (nw1 != null && nw2 != null && nwOut != null)
@@ -415,22 +449,12 @@ namespace AutomationPlus
 
 
         private void ShowSymbolConditionally(
-          bool showAnything,
           bool active,
-          KBatchedAnimController kbac,
           KAnimHashedString ifTrue,
           KAnimHashedString ifFalse)
         {
-            if (!showAnything)
-            {
-                kbac.SetSymbolVisiblity(ifTrue, false);
-                kbac.SetSymbolVisiblity(ifFalse, false);
-            }
-            else
-            {
-                kbac.SetSymbolVisiblity(ifTrue, active);
-                kbac.SetSymbolVisiblity(ifFalse, !active);
-            }
+            kbac.SetSymbolVisiblity(ifTrue, active);
+            kbac.SetSymbolVisiblity(ifFalse, !active);
         }
 
         private void TintSymbolConditionally(

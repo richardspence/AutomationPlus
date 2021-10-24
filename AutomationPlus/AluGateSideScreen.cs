@@ -183,7 +183,6 @@ namespace AutomationPlus
 
         private void OnToggleChanged(int newValue)
         {
-            Debug.Log($"SS:New Value: {newValue}");
             this.targetAluGate.isTwosComplement = newValue != PCheckBox.STATE_CHECKED;
             this.UpdateVisuals();
         }
@@ -191,7 +190,6 @@ namespace AutomationPlus
         public override void SetTarget(GameObject target)
         {
 
-            Debug.Log($"SS:SetTarget");
             base.SetTarget(target);
             this.targetAluGate = target.GetComponent<AluGate>();
             this.UpdateVisuals();
@@ -210,8 +208,6 @@ namespace AutomationPlus
 
         private void UpdateVisuals()
         {
-            Debug.Break();
-            Debug.Log($"SS:UpdateVisuals");
             if (this.toggle != null && this.targetAluGate != null)
             {
                 checkOp();
