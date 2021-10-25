@@ -83,13 +83,11 @@ namespace AutomationPlus
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
             if (logicValueChanged.portID != DisplayAdaptor.INPUT_PORT_ID)
                 return;
-            var key = currentValue = logicValueChanged.newValue;
-            var info = DisplayInfo.GetDisplayInfo(IsHexMode, key);
-            this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID1, info.RibbonOutputs[0]);
-            this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID2, info.RibbonOutputs[1]);
-            this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID3, info.RibbonOutputs[2]);
-            this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID4, info.RibbonOutputs[3]);
-            this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID5, info.RibbonOutputs[4]);
+            if (currentValue != GetInputValue())
+            {
+                currentValue = GetInputValue();
+                RefreshOutput();
+            }
         }
 
         private void RefreshOutput()

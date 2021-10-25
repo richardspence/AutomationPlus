@@ -134,7 +134,6 @@ namespace AutomationPlus
         private int CurrentValue;
         private bool connected;
         private LogicPortVisualizer outputOne;
-        private float elapsedTime;
 
         private int DelayAmountTicks => Mathf.RoundToInt(this.delayAmount / LogicCircuitManager.ClockTickInterval);
 
@@ -242,7 +241,8 @@ namespace AutomationPlus
             if (logicValueChanged.portID == DelayGate.INPUT_PORT_ID)
             {
                 var last = this.info.journal.LastOrDefault();
-                if (last == null || last.value != logicValueChanged.newValue)
+                var inputValue = this.GetInputValue();
+                if (last == null || last.value != inputValue)
                 {
                     var info = DelayGateInfoPool.getOrCreate();
                     info.value = logicValueChanged.newValue;

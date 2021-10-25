@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KSerialization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -48,6 +49,14 @@ namespace AutomationPlus
             var val2 = this.currentValue | 0xf;
             this.GetComponent<LogicPorts>().SendSignal(AluGate.OUTPUT_PORT_ID, val1);
             this.GetComponent<LogicPorts>().SendSignal(Alu8Gate.OUTPUT_PORT_IDB, val2);
+        }
+
+        protected override bool HasPort(HashedString portId)
+        {
+            return base.HasPort(portId)
+                || portId == Alu8Gate.INPUT_PORT_ID1B
+                || portId == Alu8Gate.INPUT_PORT_ID2B
+                || portId == Alu8Gate.OUTPUT_PORT_IDB;
         }
     }
 }

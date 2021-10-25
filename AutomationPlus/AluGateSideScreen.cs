@@ -213,7 +213,7 @@ namespace AutomationPlus
                 checkOp();
                 PCheckBox.SetCheckState(this.toggle, targetAluGate.isTwosComplement ? PCheckBox.STATE_CHECKED: PCheckBox.STATE_UNCHECKED);
                 var opCode = targetAluGate.GetOpCode();
-                if(!this._opCodeNames.ContainsKey(targetAluGate.opCode))
+                if(!this._opCodeNames.ContainsKey(opCode))
                 {
                     opCode = AluGateOperators.none;
                 }
