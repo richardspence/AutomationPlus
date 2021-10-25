@@ -335,6 +335,13 @@ namespace AutomationPlus
             {
                 return;
             }
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
+            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
+            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
+            if (nw1 != null && nw2 != null && nwOut != null)
+            {
+                LogicCircuitManager.ToggleNoWireConnected(false, this.gameObject);
+            }
             if (!HasValueChanged())
             {
                 return;
@@ -417,10 +424,6 @@ namespace AutomationPlus
             }
 
 
-            if (nw1 != null && nw2 != null && nwOut != null)
-            {
-                LogicCircuitManager.ToggleNoWireConnected(false, this.gameObject);
-            }
         }
 
         private void DisplayOperator()

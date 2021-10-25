@@ -67,7 +67,7 @@ namespace AutomationPlus
 
         public int GetInputValue()
         {
-            return currentValue;
+            return this.ports?.GetInputValue(DisplayAdaptor.INPUT_PORT_ID) ?? 0;
         }
 
         public string GetInputDisplayValue()
