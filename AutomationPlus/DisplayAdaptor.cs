@@ -14,6 +14,8 @@ namespace AutomationPlus
     {
         [MyCmpAdd]
         private CopyBuildingSettings copyBuildingSettings;
+        private KBatchedAnimController kbac;
+      
         public static readonly HashedString INPUT_PORT_ID = new HashedString("DisplayAdaptorInput");
         public static readonly HashedString OUTPUT_PORT_ID1 = new HashedString("DisplayAdaptorOutput1");
         public static readonly HashedString OUTPUT_PORT_ID2 = new HashedString("DisplayAdaptorOutput2");
@@ -24,8 +26,7 @@ namespace AutomationPlus
         private static readonly EventSystem.IntraObjectHandler<DisplayAdaptor> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<DisplayAdaptor>((component, data) => component.OnLogicValueChanged(data));
         private LogicPorts ports;
 
-        [Serialize]
-        private int currentValue = 0;
+        private int currentValue = -1;
 
         [Serialize]
         private bool _isHexMode = true;
@@ -52,9 +53,68 @@ namespace AutomationPlus
             base.OnSpawn();
             this.Subscribe(-801688580, DisplayAdaptor.OnLogicValueChangedDelegate);
             this.ports = this.GetComponent<LogicPorts>();
+            this.kbac = this.GetComponent<KBatchedAnimController>();
             this.Subscribe<DisplayAdaptor>(-905833192, (IntraObjectHandler<DisplayAdaptor>)((comp, data) => comp.OnCopySettings(data)));
+            RefreshAnimations();
 
-        
+        }
+
+        private void RefreshAnimations()
+        {
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(DisplayAdaptor.INPUT_PORT_ID));
+            var op1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(DisplayAdaptor.OUTPUT_PORT_ID1));
+            var op2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(DisplayAdaptor.OUTPUT_PORT_ID2));
+            var op3 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(DisplayAdaptor.OUTPUT_PORT_ID3));
+            var op4 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(DisplayAdaptor.OUTPUT_PORT_ID4));
+            var op5 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(DisplayAdaptor.OUTPUT_PORT_ID5));
+            if(nw1 != null
+                && op1 != null
+                && op2 != null
+                && op3 != null
+                && op4 != null
+                && op5 != null
+                )
+            {
+                this.kbac.Play("on_0");
+                var info = DisplayInfo.GetDisplayInfo(IsHexMode, currentValue);
+                // input = 4   20
+                // 1 = input C  0 
+                // 2 = 5   4 
+                // 3 = 1   8
+                // 4 = 2  12
+                // 5 = 3  16
+                ShowSymbols(nw1, currentValue, 20);
+                ShowSymbols(op1, info.RibbonOutputs[0], 0);
+                ShowSymbols(op2, info.RibbonOutputs[1], 4);
+                ShowSymbols(op3, info.RibbonOutputs[2], 8);
+                ShowSymbols(op4, info.RibbonOutputs[3], 12);
+                ShowSymbols(op5, info.RibbonOutputs[4], 16);
+            }
+            else
+            {
+                this.kbac.Play("off");
+                return;
+            }
+        }
+
+        private void ShowSymbols(LogicCircuitNetwork nw, int value, int endIndex)
+        {
+            for (int startIndex = endIndex+3; startIndex >= endIndex; startIndex--)
+            {
+                var bit = startIndex - endIndex;
+                ShowSymbolConditionally(nw, () => LogicCircuitNetwork.IsBitActive(bit, value), $"light{startIndex}_bloom_green", $"light{startIndex}_bloom_red");
+            }
+        }
+
+        private void ShowSymbolConditionally(
+          object nw,
+        Func<bool> active,
+        KAnimHashedString ifTrue,
+        KAnimHashedString ifFalse)
+        {
+            var connected = nw != null;
+            kbac.SetSymbolVisiblity(ifTrue, connected && active());
+            kbac.SetSymbolVisiblity(ifFalse, connected && !active());
         }
 
         private void OnCopySettings(object data)
@@ -82,6 +142,7 @@ namespace AutomationPlus
         {
             LogicValueChanged logicValueChanged = (LogicValueChanged)data;
             if (logicValueChanged.portID != DisplayAdaptor.INPUT_PORT_ID)
+                
                 return;
             if (currentValue != GetInputValue())
             {
@@ -99,6 +160,7 @@ namespace AutomationPlus
             this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID3, info.RibbonOutputs[2]);
             this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID4, info.RibbonOutputs[3]);
             this.GetComponent<LogicPorts>().SendSignal(DisplayAdaptor.OUTPUT_PORT_ID5, info.RibbonOutputs[4]);
+            RefreshAnimations();
         }
     }
 

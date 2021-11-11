@@ -42,6 +42,7 @@ namespace AutomationPlus
             this.ports = this.GetComponent<LogicPorts>();
             this.kbac = this.GetComponent<KBatchedAnimController>();
             this.kbac.Play((HashedString)"off");
+            UpdateVisuals();
         }
 
         public int GetInputValue()

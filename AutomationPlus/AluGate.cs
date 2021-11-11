@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using static EventSystem;
+using static LogicPorts;
 
 namespace AutomationPlus
 {
@@ -19,7 +20,7 @@ namespace AutomationPlus
         exp = 0x6,
         divide = 0x8,
         logicalBitRight = 0xD,
-        logicalBitLeft = 0xE,
+        logicalBitLeft = 0xE, //(6) (==, !=, <=, >= , <, >)
     }
 
     class BinaryFormatter : IFormatProvider, ICustomFormatter
@@ -185,6 +186,7 @@ namespace AutomationPlus
             {
                 _opCode = value;
                 this.RecalcValues();
+                RefreshAnimations();
             }
         }
 
@@ -210,6 +212,7 @@ namespace AutomationPlus
             set
             {
                 _isTwosComplement = value;
+                this.RecalcValues();
                 RefreshAnimations();
             }
         }
@@ -246,6 +249,10 @@ namespace AutomationPlus
             //this.kbac.Play("on_0");
             this.Subscribe<AluGate>(-801688580, p);
             this.ports = this.GetComponent<LogicPorts>();
+            Port port;
+            bool thing;
+            this.ports.TryGetPortAtCell(this.ports.GetPortCell(AluGate.OP_PORT_ID), out port, out thing);
+            port.requiresConnection = false;
             RefreshAnimations();
         }
 
@@ -296,13 +303,17 @@ namespace AutomationPlus
             }
             while (value < 0)
             {
-                currentValue += maxValue;
+                value += maxValue;
             }
             return value;
         }
 
         protected virtual void UpdateValue()
         {
+            if (this.ValueChanged != null)
+            {
+                this.ValueChanged(this, EventArgs.Empty);
+            }
             this.GetComponent<LogicPorts>().SendSignal(AluGate.OUTPUT_PORT_ID, currentValue);
         }
 
@@ -335,22 +346,15 @@ namespace AutomationPlus
             {
                 return;
             }
+            this.ports.inputPortInfo[2].requiresConnection = false;
             var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
             var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
             var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
-            if (nw1 != null && nw2 != null && nwOut != null)
-            {
-                LogicCircuitManager.ToggleNoWireConnected(false, this.gameObject);
-            }
             if (!HasValueChanged())
             {
                 return;
             }
-            if (this.ValueChanged != null)
-            {
-                this.ValueChanged(this, EventArgs.Empty);
-            }
-
+         
             if (!ShouldRecalcValue(logicValueChanged))
             {
                 RefreshAnimations();
@@ -358,6 +362,7 @@ namespace AutomationPlus
             }
             RecalcValues();
             RefreshAnimations();
+
         }
 
 
