@@ -11,22 +11,22 @@ This mod brings advanced automation buildings to allow for more compact and adva
 
 [h2]Random number generator[/h2]
 Randomly sets the output bits on a ribbon when the control signal is set.
-[img]https://raw.githubusercontent.com/richardspence/steam/images/RandomNumber.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/RandomNumber.png[/img]
 
 
 [h2]Signal Delay Gate[/h2]
 
-[img]https://raw.githubusercontent.com/richardspence/steam/images/DelayGateAnimation.gif[/img]
-[img]https://raw.githubusercontent.com/richardspence/steam/images/DelayGateWiring.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/DelayGateAnimation.gif[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/DelayGateWiring.png[/img]
 
 This gate can delay the input signal for up to the alloted amount of time.
 
 How is this different than a buffer gate?  Buffer gates become stuck "on" after the alotment of time.  They also reset the wait time on every red signal.  The delay gate delays both red and green signals the specified amount of time on all bits if ribbons are used.
-[img]https://raw.githubusercontent.com/richardspence/steam/images/DelayGateOverview.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/DelayGateOverview.png[/img]
 
 [h2]4-bit Arithmentic logical unit (ALU)[/h2]
 
-[img]https://raw.githubusercontent.com/richardspence/steam/images/4bitAluOverview.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/4bitAluOverview.png[/img]
 
 The 4-bit ALU can perform math operations on two 4-bit inputs.  The ALU can accept both signed ([url=https://en.wikipedia.org/wiki/Two%27s_complement]Two's complement[/url]) or unsigned numbers.
 
@@ -44,13 +44,13 @@ Operatos supported include:
 
 [h2]8-bit ALU[/h2]
 Same as the 4-bit variety, only with twice the inputs.
-[img]https://raw.githubusercontent.com/richardspence/steam/images/8bitAluOverview.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/8bitAluOverview.png[/img]
 
 [h2]Display Adaptor[/h2]
 The display adaptor is an automation building that takes a 4-bit signal and converts that into 5 ribbon outputs for use to display the values.
 
-[img]https://raw.githubusercontent.com/richardspence/steam/images/DisplayAdaptorOverview.png[/img]
-[img]https://raw.githubusercontent.com/richardspence/steam/images/DelayGateWiring.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/DisplayAdaptorOverview.png[/img]
+[img]https://raw.githubusercontent.com/richardspence/AutomationPlus/main/steam/images/DisplayAdaptorWiring.png[/img]
 
 The adaptor supports both displaying hexadecimal inputs as well as a decimal values with additional codes reserved for having the pixel packs fully on/off.
 
@@ -61,3 +61,6 @@ All feedback is welcome.  Please use github to report any bugs or feature reques
 [h2]Source code and copyright[/h2]
 
 Source code for this mod can be found on github, [url=https://github.com/richardspence/AutomationPlus]here[/url]. Under the MIT open source license.
+
+[h2]Special Thanks[/h2]
+Special thanks to [url=https://steamcommunity.com/profiles/76561198165502222]|ScientisT|RU|[/url] for creating the art assets
