@@ -20,6 +20,13 @@ namespace AutomationPlus
             { AluGateOperators.exp ,             "Exponent" },
             { AluGateOperators.logicalBitLeft ,  "Bit Shift Left" },
             {  AluGateOperators.logicalBitRight ,"Bit Shift Right"},
+            {  AluGateOperators.equal ,"Equal"},
+            {  AluGateOperators.notEqual ,"Not Equal"},
+            {  AluGateOperators.lessThan ,"Less than"},
+            {  AluGateOperators.lessThanOrEqual ,"Less than or equal"},
+            {  AluGateOperators.greaterThan ,"Greater than"},
+            {  AluGateOperators.greaterThanOrEqual ,"Greater than or equal"},
+            {  AluGateOperators.plusPlus ,"Increment by one"},
         };
         private AluGate targetAluGate;
         public AluGateSideScreen()

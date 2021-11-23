@@ -186,7 +186,7 @@ namespace AutomationPlus
             var displayMap = GetDisplayMap(IsHexMode);
             if (!displayMap.ContainsKey(value))
             {
-                value = 12;
+                value = IsHexMode? 15: 12;
             }
 
             return displayMap[value];

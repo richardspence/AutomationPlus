@@ -13,13 +13,20 @@ namespace AutomationPlus
         public static LocString DESC = (LocString)$@"The ALU can perform multiple operations on the inputs.
 Operator Codes:   
 add = 0x1 (0001)
-subtract = 0x2 (0010),
-multiply = 0x4 (0100),
-modulus = 0x5 (0101),
-exp = 0x6 (0110),
-divide = 0x8 (1000),
-logicalBitRight = 0xD (1101),
-logicalBitLeft = 0xE, (1110)
+subtract = 0x2 (0010)
+multiply = 0x3 (0011)
+modulus = 0x4 (0100)
+exp = 0x5 (0101)
+divide = 0x6 (0110)
+logicalBitRight = 0x7 (0111)
+logicalBitLeft = 0x8 (1000)
+equal = 0x9 (1001)
+notEqual = 0xA (1010)
+lessThan = 0xB (1011)
+greaterThan = 0xC (1100)
+lessThanOrEqual = 0xD (1101)
+greaterThanOrEqual = 0xE (1110)
+plusPlus = 0xF (1111)
 
 Signed numbers when enabled sets the ALU into using a twos complement binary number system. When enabled, the first bit when active {UI.FormatAsAutomationState("active", UI.AutomationState.Active)} signifies a negative number.";
 

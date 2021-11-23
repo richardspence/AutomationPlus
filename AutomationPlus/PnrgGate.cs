@@ -15,7 +15,8 @@ namespace AutomationPlus
         private CopyBuildingSettings copyBuildingSettings;
         public static readonly HashedString INPUT_PORT_ID = new HashedString("PnrgGateInput");
         public static readonly HashedString OUTPUT_PORT_ID = new HashedString("PnrgGateOutput");
-        private System.Random _random = new System.Random();
+        private static System.Random _random = new System.Random();
+        private bool hasRendered = false;
 
         private static readonly EventSystem.IntraObjectHandler<PnrgGate> OnLogicValueChangedDelegate = new EventSystem.IntraObjectHandler<PnrgGate>((component, data) => component.OnLogicValueChanged(data));
         //private static readonly EventSystem.IntraObjectHandler<PnrgGate> OnCopySettingsDelegate = new EventSystem.IntraObjectHandler<PnrgGate>(((component, data) => component.OnCopySettings(data)));
@@ -93,7 +94,7 @@ namespace AutomationPlus
                     setValue = i;
                 }
             }
-            if (changed)
+            if (changed || !hasRendered)
             {
                 UpdateVisuals();
             }
@@ -101,6 +102,7 @@ namespace AutomationPlus
 
         public void UpdateVisuals()
         {
+            hasRendered = true;
             LogicCircuitNetwork inputNetwork = this.GetInputNetwork();
             LogicCircuitNetwork outputNetwork = this.GetOutputNetwork();
             if (inputNetwork != null || outputNetwork != null)
