@@ -37,6 +37,14 @@ namespace AutomationPlus
 
         }
 
+        protected override bool IsOnAnimation()
+        {
+            var nw1b = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(Alu8Gate.INPUT_PORT_ID1B));
+            var nw2b = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(Alu8Gate.INPUT_PORT_ID2B));
+            var nwOutb = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(Alu8Gate.OUTPUT_PORT_IDB));
+            return base.IsOnAnimation() && nw1b != null && nw2b != null && nwOutb != null; 
+        }
+
         protected override bool ShouldRecalcValue(LogicValueChanged logicValueChanged)
         {
             return base.ShouldRecalcValue(logicValueChanged)
