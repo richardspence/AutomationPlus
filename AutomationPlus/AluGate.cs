@@ -195,6 +195,8 @@ namespace AutomationPlus
         [Serialize]
         protected int currentValue = 0;
         [Serialize]
+        protected bool needsToggleRefresh = true;
+        [Serialize]
         private AluGateOperators _opCode = AluGateOperators.none;
         public AluGateOperators opCode
         {
@@ -366,13 +368,11 @@ namespace AutomationPlus
             {
                 return;
             }
-            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
-            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
-            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
-            if (!HasValueChanged())
+            if (!HasValueChanged() && !this.needsToggleRefresh && IsOnAnimation())
             {
                 return;
             }
+            this.needsToggleRefresh = true;
          
             if (!ShouldRecalcValue(logicValueChanged))
             {
@@ -382,6 +382,14 @@ namespace AutomationPlus
             RecalcValues();
             RefreshAnimations();
 
+        }
+
+        protected virtual bool IsOnAnimation()
+        {
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
+            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
+            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID));
+            return (nw1 != null && nw2 != null && nwOut != null);
         }
 
 
@@ -417,13 +425,14 @@ namespace AutomationPlus
             }
             else
             {
-                if (nw1 != null && nw2 != null && nwOut != null)
+                if (this.IsOnAnimation())
                 {
                     this.kbac.Play("on_0");
 
                     ToggleBlooms();
 
                     DisplayOperator();
+                    this.needsToggleRefresh = false;
 
                 }
                 else

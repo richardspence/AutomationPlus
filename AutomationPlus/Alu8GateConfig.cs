@@ -20,7 +20,7 @@ namespace AutomationPlus
             EffectorValues none = TUNING.NOISE_POLLUTION.NONE;
             EffectorValues tieR0_2 = TUNING.BUILDINGS.DECOR.PENALTY.TIER0;
             EffectorValues noise = none;
-            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, 4,4, "8bit_alu_kanim", 30, 30f, tieR0_1, refinedMetals, 1600f, BuildLocationRule.Anywhere, tieR0_2, noise);
+            BuildingDef buildingDef = BuildingTemplates.CreateBuildingDef(id, 2,4, "8bit_alu_kanim", 30, 30f, tieR0_1, refinedMetals, 1600f, BuildLocationRule.Anywhere, tieR0_2, noise);
             buildingDef.Overheatable = false;
             buildingDef.Floodable = false;
             buildingDef.Entombable = false;
