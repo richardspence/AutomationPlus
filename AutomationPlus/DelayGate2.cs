@@ -153,7 +153,7 @@ namespace AutomationPlus
 
         public string GetSliderTooltipKey(int index) => "AutomationPlus.DELAYGATE.DELAYGATE_SIDESCREEN.TOOLTIP";
 
-        string ISliderControl.GetSliderTooltip() => string.Format((string)Strings.Get(GetSliderTooltipKey(0)), (object)this.DelayAmount);
+        string ISliderControl.GetSliderTooltip(int index) => string.Format((string)Strings.Get(GetSliderTooltipKey(0)), (object)this.DelayAmount);
 
         protected override void OnPrefabInit()
         {
