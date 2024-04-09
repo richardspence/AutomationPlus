@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\ILMerge.3.0.41\build\ILMerge.props" Condition="Exists('..\packages\ILMerge.3.0.41\build\ILMerge.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -13,6 +14,8 @@
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,15 +46,18 @@
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OniStubs.2.0.0\lib\Assembly-CSharp.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OniStubs.2.0.0\lib\Assembly-CSharp-firstpass.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PLib, Version=4.15.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PLib.4.15.0\lib\net471\PLib.dll</HintPath>
@@ -65,23 +71,30 @@
     <Reference Include="System.Xml" />
     <Reference Include="Unity.TextMeshPro">
       <HintPath>..\lib\Unity.TextMeshPro.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\lib\UnityEngine.CoreModule.dll</HintPath>
-      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\lib\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>..\lib\UnityEngine.InputLegacyModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>..\lib\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>..\lib\UnityEngine.UI.dll</HintPath>
-      <Private>False</Private>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>..\lib\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>..\lib\UnityEngine.UnityWebRequestModule.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -185,10 +198,14 @@
     </ItemGroup>
   </Target>
   <PropertyGroup>
-    <PostBuildEvent>IF EXIST %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\ (
-    xcopy /Y /s $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
-) else (
-    IF EXIST %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\  xcopy /Y /s $(TargetDir) %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
-)</PostBuildEvent>
+    <PostBuildEvent>
+      "$(ILMergeConsolePath)" /out:$(TargetName)Merged.dll $(TargetName).dll PLib.dll /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319
+    </PostBuildEvent>
   </PropertyGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\ILMerge.3.0.41\build\ILMerge.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILMerge.3.0.41\build\ILMerge.props'))" />
+  </Target>
 </Project>
