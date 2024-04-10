@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\ILMerge.3.0.41\build\ILMerge.props" Condition="Exists('..\packages\ILMerge.3.0.41\build\ILMerge.props')" />
+  <Import Project="..\packages\ILRepack.2.0.30\build\ILRepack.props" Condition="Exists('..\packages\ILRepack.2.0.30\build\ILRepack.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -157,6 +157,7 @@
     <Content Include="anim\assets\logic_generator_random\logic_generator_random_build.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="ILMerge.props" />
     <None Include="mod.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -197,25 +198,47 @@
       <Compile Include="$(IntermediateOutputPath)Version.cs" />
     </ItemGroup>
   </Target>
+  <ItemGroup>
+    <MergeAsm Include="$(OutputPath)$(TargetFileName)" />
+    <MergeAsm Include="$(OutputPath)PLib.dll" />
+  </ItemGroup>
+  <!-- <ILMerge InputAssemblies="@(MergeAsm)" OutputFile="$(TargetFileName)" TargetKind="SameAsPrimaryAssembly" /> -->
   <PropertyGroup>
     <PostBuildEvent>
-      "$(ILMergeConsolePath)" /out:$(TargetName)Merged.dll $(TargetName).dll PLib.dll /targetplatform:v4,%windir%\Microsoft.NET\Framework64\v4.0.30319
-
-IF EXIST %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\ (
-    xcopy /Y /s $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
-) else (
-    IF EXIST %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\  xcopy /Y /s $(TargetDir) %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
-)
-
-del $(TargetDir)Assembly-CSharp.dll
-del $(TargetDir)Assembly-CSharp-firstpass.dll 
-
 </PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\ILMerge.3.0.41\build\ILMerge.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILMerge.3.0.41\build\ILMerge.props'))" />
+    <Error Condition="!Exists('..\packages\ILRepack.2.0.30\build\ILRepack.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.2.0.30\build\ILRepack.props'))" />
+    <Error Condition="!Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.targets'))" />
   </Target>
+  <!-- <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.targets')" /> -->
+ <UsingTask AssemblyFile="..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.dll" TaskName="ILRepack" />
+	<Target Name="ILRepack" AfterTargets="Build" Condition="$(Configuration.Contains('Release')) and !Exists('$(ILRepackTargetsFile)')">
+		<ItemGroup>
+			<InputAssemblies Include="$(OutputPath)$(TargetName)$(TargetExt)" />
+			<InputAssemblies Include="$(OutputPath)Plib.dll" />
+			<ILRepack Parallel="true" DebugInfo="true" AllowDuplicateResources="false" InputAssemblies="@(InputAssemblies)" TargetKind="SameAsPrimaryAssembly" KeyFile="$(KeyFile)" OutputFile="$(OutputPath)$(TargetName)$(TargetExt)" />
+		</ItemGroup>
+	
+	</Target>
+  	<Target AfterTargets="ILRepack" Name="CleanReferenceCopyLocalPaths" Condition="$(Configuration.Contains('Release')) and !Exists('$(ILRepackTargetsFile)') and '$(ClearOutputDirectory)' != 'False'">
+			<Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" />
+			<ItemGroup>
+				<Directories Include="$([System.IO.Directory]::GetDirectories('$(OutDir)%(DestinationSubDirectory)', '*', System.IO.SearchOption.AllDirectories))" />
+				<Directories>
+					<Files>
+						$([System.IO.Directory]::GetFiles("%(Directories.Identity)", "*", System.IO.SearchOption.AllDirectories).get_Length())
+					</Files>
+				</Directories>
+			</ItemGroup>
+			<RemoveDir Directories="@(Directories)" Condition="%(Files)=='0'" />
+		</Target>
+      <Target Name="CopyToLocal" AfterTargets="ILRepack">
+        <!-- set security on binaries-->
+            <Exec Command="xcopy /Y /s $(TargetDir) $(USERPROFILE)\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)" Condition="Exists('$(USERPROFILE)\OneDrive\Documents\Klei\OxygenNotIncluded')" />
+            <Exec Command="xcopy /Y /s $(TargetDir) $(USERPROFILE)\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)" Condition="Exists('$(USERPROFILE)\Documents\Klei\OxygenNotIncluded')" />
+    </Target>
 </Project>
