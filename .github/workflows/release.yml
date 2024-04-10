@@ -2,13 +2,11 @@ name: Release Build
 
 on:
   push:
-  pull_request:
-    branches: [ main ]
-    tags-ginore:
-      - '*'
+    branches:
+      - main
     paths:
-    - '**.cs'
-    - '**.csproj'
+      - '**.cs'
+      - '**.csproj'
 
 env:
   DOTNET_VERSION: '5.0.301' # The .NET SDK version to use

@@ -2,6 +2,13 @@ name: build
 
 on:
   push:
+  pull_request:
+    branches: [ main ]
+    tags-ginore:
+      - '*'
+    paths:
+    - '**.cs'
+    - '**.csproj'
   
 env:
   DOTNET_VERSION: '5.0.301' # The .NET SDK version to use
@@ -28,12 +35,5 @@ jobs:
       run: nuget restore
     - name: Build
       run: dotnet build --configuration Release --no-restore
-    - name: Archive Release
-      uses: thedoctor0/zip-release@master
-      with:
-        type: 'zip'
-        filename: 'AutomationPlus.zip'
-        path: AutomationPlus/bin/Release
-        exclusions: '*.git* /*node_modules/* .editorconfig'
 
       
