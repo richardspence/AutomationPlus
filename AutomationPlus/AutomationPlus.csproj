@@ -49,9 +49,11 @@
     </Reference>
     <Reference Include="Assembly-CSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OniStubs.2.0.0\lib\Assembly-CSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\OniStubs.2.0.0\lib\Assembly-CSharp-firstpass.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -198,7 +200,12 @@
   <PropertyGroup>
     <PostBuildEvent>
       "$(ILMergeConsolePath)" /out:$(TargetName)Merged.dll $(TargetName).dll PLib.dll /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319
-    </PostBuildEvent>
+
+IF EXIST %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\ (
+    xcopy /Y /s $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
+) else (
+    IF EXIST %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\  xcopy /Y /s $(TargetDir) %25USERPROFILE%25\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
+)</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
