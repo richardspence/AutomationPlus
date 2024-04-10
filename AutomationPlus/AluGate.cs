@@ -1,9 +1,9 @@
-﻿using KSerialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using KSerialization;
 using UnityEngine;
 using static EventSystem;
 using static LogicPorts;
@@ -46,10 +46,12 @@ namespace AutomationPlus
     class BinaryFormatter : IFormatProvider, ICustomFormatter
     {
         private bool isTwosComplement;
+
         public BinaryFormatter(bool isTwosComplement)
         {
             this.isTwosComplement = isTwosComplement;
         }
+
         public object GetFormat(Type formatType)
         {
             if (formatType == typeof(ICustomFormatter))
@@ -112,7 +114,6 @@ namespace AutomationPlus
                     {
                         binaryValue += "0";
                     }
-
                 }
                 return binaryValue;
             }
@@ -128,8 +129,8 @@ namespace AutomationPlus
     {
         private static Dictionary<int, int> _minValues = new Dictionary<int, int>()
         {
-            {4, 1 << 3 },
-            {8, 1 << 7 }
+            { 4, 1 << 3 },
+            { 8, 1 << 7 }
         };
 
         public static bool IsNegative(int value, int bits)
@@ -187,23 +188,24 @@ namespace AutomationPlus
 
         [Serialize]
         protected int lhs;
+
         [Serialize]
         protected int rhs;
+
         [Serialize]
         private AluGateOperators _inputOpCode;
- 
+
         [Serialize]
         protected int currentValue = 0;
+
         [Serialize]
         protected bool needsToggleRefresh = true;
+
         [Serialize]
         private AluGateOperators _opCode = AluGateOperators.none;
         public AluGateOperators opCode
         {
-            get
-            {
-                return _opCode;
-            }
+            get { return _opCode; }
             set
             {
                 _opCode = value;
@@ -218,13 +220,12 @@ namespace AutomationPlus
 
         protected LogicPorts ports;
 
-        public AluGate() : base()
-        {
-
-        }
+        public AluGate()
+            : base() { }
 
         protected int maxValue = 0xf;
         protected int bits = 4;
+
         [Serialize]
         private bool _isTwosComplement;
 
@@ -239,13 +240,13 @@ namespace AutomationPlus
             }
         }
 
-
-
-
         protected override void OnPrefabInit()
         {
             base.OnPrefabInit();
-            this.Subscribe<AluGate>(-905833192, (IntraObjectHandler<AluGate>)((comp, data) => comp.OnCopySettings(data)));
+            this.Subscribe<AluGate>(
+                -905833192,
+                (IntraObjectHandler<AluGate>)((comp, data) => comp.OnCopySettings(data))
+            );
         }
 
         private void OnCopySettings(object data)
@@ -273,7 +274,11 @@ namespace AutomationPlus
             this.ports = this.GetComponent<LogicPorts>();
             Port port;
             bool thing;
-            this.ports.TryGetPortAtCell(this.ports.GetPortCell(AluGate.OP_PORT_ID), out port, out thing);
+            this.ports.TryGetPortAtCell(
+                this.ports.GetPortCell(AluGate.OP_PORT_ID),
+                out port,
+                out thing
+            );
             port.requiresConnection = false;
             RefreshAnimations();
         }
@@ -300,7 +305,6 @@ namespace AutomationPlus
             };
         }
 
-
         private int getTwosComplement(int value)
         {
             return BinaryUtils.GetTwosComplement(value, bits);
@@ -308,7 +312,6 @@ namespace AutomationPlus
 
         public AluGateOperators GetOpCode()
         {
-
             var input = this.ports?.GetInputValue(AluGate.OP_PORT_ID);
             if (input == null || !this.isOpCodeConnected())
             {
@@ -344,8 +347,8 @@ namespace AutomationPlus
             return portId == AluGate.INPUT_PORT_ID1
                 || portId == AluGate.INPUT_PORT_ID2
                 || portId == AluGate.OP_PORT_ID;
-
         }
+
         protected virtual bool HasValueChanged()
         {
             var currentLhs = GetInputValue1();
@@ -373,7 +376,7 @@ namespace AutomationPlus
                 return;
             }
             this.needsToggleRefresh = true;
-         
+
             if (!ShouldRecalcValue(logicValueChanged))
             {
                 RefreshAnimations();
@@ -381,91 +384,147 @@ namespace AutomationPlus
             }
             RecalcValues();
             RefreshAnimations();
-
         }
 
         protected virtual bool IsOnAnimation()
         {
-            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
-            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
-            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID));
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.INPUT_PORT_ID1)
+            );
+            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.INPUT_PORT_ID2)
+            );
+            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID)
+            );
             return (nw1 != null && nw2 != null && nwOut != null);
         }
 
-
         private void RefreshAnimations()
         {
-            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
-            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
-            var nwOp = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
-            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID));
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.INPUT_PORT_ID1)
+            );
+            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.INPUT_PORT_ID2)
+            );
+            var nwOp = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.OP_PORT_ID)
+            );
+            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID)
+            );
 
-            if (false)
+            if (this.IsOnAnimation())
             {
+                this.kbac.Play("on_0");
 
-                this.kbac.Play("on");
+                ToggleBlooms();
 
-
-                this.TintSymbolConditionally(nwOp, () => nwOp.OutputValue > 0, this.kbac, "light5_bloom");
-
-                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(3, currentValue), this.kbac, "light1_bloom"); //12
-                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(2, currentValue), this.kbac, "light2_bloom");
-                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(1, currentValue), this.kbac, "light3_bloom");
-                this.TintSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(0, currentValue), this.kbac, "light4_bloom"); // 9
-
-                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(3, rhs), this.kbac, "light6_bloom");  // 7
-                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(2, rhs), this.kbac, "light7_bloom");
-                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(1, rhs), this.kbac, "light8_bloom");
-                this.TintSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(0, rhs), this.kbac, "light9_bloom");  // 4
-
-                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(3, lhs), this.kbac, "light10_bloom");  // 3
-                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(2, lhs), this.kbac, "light11_bloom");
-                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(1, lhs), this.kbac, "light12_bloom");
-                this.TintSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(0, lhs), this.kbac, "light13_bloom");  // 0
+                DisplayOperator();
+                this.needsToggleRefresh = false;
             }
             else
             {
-                if (this.IsOnAnimation())
-                {
-                    this.kbac.Play("on_0");
-
-                    ToggleBlooms();
-
-                    DisplayOperator();
-                    this.needsToggleRefresh = false;
-
-                }
-                else
-                {
-                    this.kbac.Play("off");
-                }
+                this.kbac.Play("off");
             }
-
-
         }
 
         protected virtual void ToggleBlooms()
         {
-            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID1));
-            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.INPUT_PORT_ID2));
-            var nwOp = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OP_PORT_ID));
-            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID));
-            ShowSymbolConditionally(nwOp, () => nwOp.OutputValue > 0, $"light{8}_bloom_green", $"light{8}_bloom_red");
+            var nw1 = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.INPUT_PORT_ID1)
+            );
+            var nw2 = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.INPUT_PORT_ID2)
+            );
+            var nwOp = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.OP_PORT_ID)
+            );
+            var nwOut = Game.Instance.logicCircuitManager.GetNetworkForCell(
+                this.ports.GetPortCell(AluGate.OUTPUT_PORT_ID)
+            );
+            ShowSymbolConditionally(
+                nwOp,
+                () => nwOp.OutputValue > 0,
+                $"light{8}_bloom_green",
+                $"light{8}_bloom_red"
+            );
 
-            ShowSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(3, currentValue), $"light{12}_bloom_green", $"light{12}_bloom_red");
-            ShowSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(2, currentValue), $"light{11}_bloom_green", $"light{11}_bloom_red");
-            ShowSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(1, currentValue), $"light{10}_bloom_green", $"light{10}_bloom_red");
-            ShowSymbolConditionally(nwOut, () => LogicCircuitNetwork.IsBitActive(0, currentValue), $"light{9}_bloom_green", $"light{9}_bloom_red");
+            ShowSymbolConditionally(
+                nwOut,
+                () => LogicCircuitNetwork.IsBitActive(3, currentValue),
+                $"light{12}_bloom_green",
+                $"light{12}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nwOut,
+                () => LogicCircuitNetwork.IsBitActive(2, currentValue),
+                $"light{11}_bloom_green",
+                $"light{11}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nwOut,
+                () => LogicCircuitNetwork.IsBitActive(1, currentValue),
+                $"light{10}_bloom_green",
+                $"light{10}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nwOut,
+                () => LogicCircuitNetwork.IsBitActive(0, currentValue),
+                $"light{9}_bloom_green",
+                $"light{9}_bloom_red"
+            );
 
-            ShowSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(3, rhs), $"light{7}_bloom_green", $"light{7}_bloom_red");
-            ShowSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(2, rhs), $"light{6}_bloom_green", $"light{6}_bloom_red");
-            ShowSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(1, rhs), $"light{5}_bloom_green", $"light{5}_bloom_red");
-            ShowSymbolConditionally(nw2, () => LogicCircuitNetwork.IsBitActive(0, rhs), $"light{4}_bloom_green", $"light{4}_bloom_red");
+            ShowSymbolConditionally(
+                nw2,
+                () => LogicCircuitNetwork.IsBitActive(3, rhs),
+                $"light{7}_bloom_green",
+                $"light{7}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nw2,
+                () => LogicCircuitNetwork.IsBitActive(2, rhs),
+                $"light{6}_bloom_green",
+                $"light{6}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nw2,
+                () => LogicCircuitNetwork.IsBitActive(1, rhs),
+                $"light{5}_bloom_green",
+                $"light{5}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nw2,
+                () => LogicCircuitNetwork.IsBitActive(0, rhs),
+                $"light{4}_bloom_green",
+                $"light{4}_bloom_red"
+            );
 
-            ShowSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(3, lhs), $"light{3}_bloom_green", $"light{3}_bloom_red");
-            ShowSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(2, lhs), $"light{2}_bloom_green", $"light{2}_bloom_red");
-            ShowSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(1, lhs), $"light{1}_bloom_green", $"light{1}_bloom_red");
-            ShowSymbolConditionally(nw1, () => LogicCircuitNetwork.IsBitActive(0, lhs), $"light{0}_bloom_green", $"light{0}_bloom_red");
+            ShowSymbolConditionally(
+                nw1,
+                () => LogicCircuitNetwork.IsBitActive(3, lhs),
+                $"light{3}_bloom_green",
+                $"light{3}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nw1,
+                () => LogicCircuitNetwork.IsBitActive(2, lhs),
+                $"light{2}_bloom_green",
+                $"light{2}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nw1,
+                () => LogicCircuitNetwork.IsBitActive(1, lhs),
+                $"light{1}_bloom_green",
+                $"light{1}_bloom_red"
+            );
+            ShowSymbolConditionally(
+                nw1,
+                () => LogicCircuitNetwork.IsBitActive(0, lhs),
+                $"light{0}_bloom_green",
+                $"light{0}_bloom_red"
+            );
         }
 
         private void DisplayOperator()
@@ -481,16 +540,16 @@ namespace AutomationPlus
             ToggleOperator(_inputOpCode == AluGateOperators.lessThan, "op_less");
             ToggleOperator(_inputOpCode == AluGateOperators.lessThanOrEqual, "op_lessThanOrEqual");
             ToggleOperator(_inputOpCode == AluGateOperators.greaterThan, "op_more");
-            ToggleOperator(_inputOpCode == AluGateOperators.greaterThanOrEqual, "op_moreThanOrEqual");
+            ToggleOperator(
+                _inputOpCode == AluGateOperators.greaterThanOrEqual,
+                "op_moreThanOrEqual"
+            );
             ToggleOperator(_inputOpCode == AluGateOperators.plusPlus, "op_addadd");
             ToggleOperator(_inputOpCode == AluGateOperators.equal, "op_equality");
             ToggleOperator(_inputOpCode == AluGateOperators.notEqual, "op_not_equality");
-
         }
 
-        private void ToggleOperator(
-          bool isOperator,
-          KAnimHashedString anim)
+        private void ToggleOperator(bool isOperator, KAnimHashedString anim)
         {
             kbac.SetSymbolVisiblity(anim, isOperator);
         }
@@ -583,13 +642,12 @@ namespace AutomationPlus
             }
         }
 
-
-
         protected void ShowSymbolConditionally(
             object nw,
-          Func<bool> active,
-          KAnimHashedString ifTrue,
-          KAnimHashedString ifFalse)
+            Func<bool> active,
+            KAnimHashedString ifTrue,
+            KAnimHashedString ifFalse
+        )
         {
             var connected = nw != null;
             kbac.SetSymbolVisiblity(ifTrue, connected && active());
@@ -597,11 +655,11 @@ namespace AutomationPlus
         }
 
         private void TintSymbolConditionally(
-          object tintAnything,
-          Func<bool> condition,
-          KBatchedAnimController kbac,
-          KAnimHashedString symbol
-         )
+            object tintAnything,
+            Func<bool> condition,
+            KBatchedAnimController kbac,
+            KAnimHashedString symbol
+        )
         {
             if (tintAnything != null)
                 kbac.SetSymbolTint(symbol, condition() ? activeTintColor : inactiveTintColor);
@@ -610,15 +668,14 @@ namespace AutomationPlus
         }
 
         private void SetBloomSymbolShowing(
-          bool showing,
-          KBatchedAnimController kbac,
-          KAnimHashedString symbol,
-          KAnimHashedString bloomSymbol)
+            bool showing,
+            KBatchedAnimController kbac,
+            KAnimHashedString symbol,
+            KAnimHashedString bloomSymbol
+        )
         {
             kbac.SetSymbolVisiblity(bloomSymbol, showing);
             kbac.SetSymbolVisiblity(symbol, !showing);
         }
     }
-
-
 }
