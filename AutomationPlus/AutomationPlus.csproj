@@ -199,7 +199,7 @@
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
-      "$(ILMergeConsolePath)" /out:$(TargetName)Merged.dll $(TargetName).dll PLib.dll /targetplatform:v4,C:\Windows\Microsoft.NET\Framework64\v4.0.30319
+      "$(ILMergeConsolePath)" /out:$(TargetName)Merged.dll $(TargetName).dll PLib.dll /targetplatform:v4,%windir%\Microsoft.NET\Framework64\v4.0.30319
 
 IF EXIST %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\ (
     xcopy /Y /s $(TargetDir) %25USERPROFILE%25\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)
