@@ -60,8 +60,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="PLib, Version=4.15.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\PLib.4.15.0\lib\net471\PLib.dll</HintPath>
+    <Reference Include="PLib, Version=4.17.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PLib.4.17.1\lib\net471\PLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
