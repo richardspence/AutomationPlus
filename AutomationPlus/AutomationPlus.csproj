@@ -43,6 +43,15 @@
     <Version Condition="'$(Version)' == ''">1.0.0.0</Version>
     <FileVersion Condition="'$(FileVersion)' == ''">$(Version)</FileVersion>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Packed|AnyCPU'">
+    <OutputPath>bin\Packed\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
@@ -56,9 +65,8 @@
       <HintPath>..\packages\OniStubs.2.0.0\lib\Assembly-CSharp-firstpass.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PLib, Version=4.17.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\PLib.4.17.1\lib\net471\PLib.dll</HintPath>
@@ -163,6 +171,7 @@
     <Content Include="anim\assets\logic_generator_random\logic_generator_random_build.bytes">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="app.config" />
     <None Include="mod.yaml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -216,23 +225,24 @@
   </Target>
   <!-- <Import Project="..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.targets" Condition="Exists('..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.targets')" /> -->
   <UsingTask AssemblyFile="..\packages\ILRepack.Lib.MSBuild.Task.2.0.29\build\ILRepack.Lib.MSBuild.Task.dll" TaskName="ILRepack" />
-  <Target Name="ILRepack" AfterTargets="Build" Condition="$(Configuration.Contains('Release')) and !Exists('$(ILRepackTargetsFile)')">
+  <Target Name="ILRepack" AfterTargets="Build" Condition="$(Configuration.Contains('Packed')) and !Exists('$(ILRepackTargetsFile)')">
+    <PropertyGroup>
+      <WorkingDirectory>..\lib</WorkingDirectory>
+    </PropertyGroup>
     <ItemGroup>
-      <InputAssemblies Include="$(OutputPath)$(TargetName)$(TargetExt)" />
-      <InputAssemblies Include="$(OutputPath)Plib.dll" />
-      <ILRepack Parallel="true" DebugInfo="true" AllowDuplicateResources="false" InputAssemblies="@(InputAssemblies)" TargetKind="SameAsPrimaryAssembly" KeyFile="$(KeyFile)" OutputFile="$(OutputPath)$(TargetName)$(TargetExt)" />
+      <InputAssemblies Include="$(OutputPath)PLib.dll" />
+      <InputAssemblies Include="$(OutputPath)$(AssemblyName).dll" />
     </ItemGroup>
+    <ILRepack Parallel="true" Internalize="true" DebugInfo="true" AllowDuplicateResources="false" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" LibraryPath="$(WorkingDirectory)" OutputFile="$(OutputPath)$(AssemblyName).dll" />
   </Target>
   <Target AfterTargets="ILRepack" Name="CleanReferenceCopyLocalPaths" Condition="$(Configuration.Contains('Release')) and !Exists('$(ILRepackTargetsFile)') and '$(ClearOutputDirectory)' != 'False'">
     <!-- <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" /> -->
     <ItemGroup>
-      <!-- <FilesToDelete Include="$(OutputPath)Plib.dll" /> -->
-      <FilesToDelete Include="$(OutputPath)Assembly-CSharp.dll" />
-      <FilesToDelete Include="$(OutputPath)Assembly-CSharp-firstpass.dll" />
+      <FilesToDelete Include="$(OutputPath)*.dll" Exclude="$(OutputPath)$(AssemblyName).dll" />
     </ItemGroup>
     <Delete Files="@(FilesToDelete->'$(OutputPath)%(Filename)%(Extension)')" />
   </Target>
-  <Target Name="CopyToLocal" AfterTargets="ILRepack">
+  <Target Name="CopyToLocal" AfterTargets="CleanReferenceCopyLocalPaths">
     <!-- set security on binaries-->
     <Exec Command="xcopy /Y /s $(TargetDir) $(USERPROFILE)\OneDrive\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)" Condition="Exists('$(USERPROFILE)\OneDrive\Documents\Klei\OxygenNotIncluded')" />
     <Exec Command="xcopy /Y /s $(TargetDir) $(USERPROFILE)\Documents\Klei\OxygenNotIncluded\mods\Local\$(ProjectName)" Condition="Exists('$(USERPROFILE)\Documents\Klei\OxygenNotIncluded')" />
