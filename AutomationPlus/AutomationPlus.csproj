@@ -235,7 +235,7 @@
     </ItemGroup>
     <ILRepack Parallel="true" Internalize="true" DebugInfo="true" AllowDuplicateResources="false" InputAssemblies="@(InputAssemblies)" TargetKind="Dll" LibraryPath="$(WorkingDirectory)" OutputFile="$(OutputPath)$(AssemblyName).dll" />
   </Target>
-  <Target AfterTargets="ILRepack" Name="CleanReferenceCopyLocalPaths" Condition="$(Configuration.Contains('Release')) and !Exists('$(ILRepackTargetsFile)') and '$(ClearOutputDirectory)' != 'False'">
+  <Target AfterTargets="ILRepack" Name="CleanReferenceCopyLocalPaths" Condition="!Exists('$(ILRepackTargetsFile)') and '$(ClearOutputDirectory)' != 'False'">
     <!-- <Delete Files="@(ReferenceCopyLocalPaths->'$(OutDir)%(DestinationSubDirectory)%(Filename)%(Extension)')" /> -->
     <ItemGroup>
       <FilesToDelete Include="$(OutputPath)*.dll" Exclude="$(OutputPath)$(AssemblyName).dll" />
